@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { WheelStand } from "./core/Wheel";
 import { LEDRing } from "./core/LEDRing";
 import { Confetti } from "./core/Confetti";
+import gsap from "gsap";
 import { Marker } from "./core/Marker";
 import { BlurFilter } from "@pixi/filter-blur";
 
@@ -145,8 +146,65 @@ async function boot() {
   btn.scale.set(0.1);
   btn.position.copyFrom(wheel.position);
   btn.eventMode = "static";
-  btn.on("pointerdown", () => wheel.spin((prize) => alert(`You won ${prize.label}!`)));
+  btn.on("pointerdown", () => {
+    wheel.spin((prize) => {
+      showPrizeOverlay(app, prize.label);
+    });
+  });
+  
   app.stage.addChild(btn);
 }
+
+function showPrizeOverlay(app: PIXI.Application, prize: string) {
+  const overlay = new PIXI.Container();
+
+  // Fondo (bg)
+  const bg = new PIXI.Graphics();
+  const boxWidth = 600;
+  const boxHeight = 300;
+  bg.beginFill(0x000000, 0.7);
+  bg.roundRect(0, 0, boxWidth, boxHeight, 20);
+  bg.endFill();
+
+  // Texto centrado dentro del fondo
+  const textStyle = new PIXI.TextStyle({
+    fontFamily: "Luckiest Guy, sans-serif",
+    fontSize: 48,
+    fill: "#ffff00",
+    align: "center",
+    dropShadow: true,
+    dropShadowColor: "#000",
+    dropShadowBlur: 5,
+    dropShadowDistance: 4,
+  });
+
+  const label = new PIXI.Text(`¡Ganaste ${prize}!`, textStyle);
+  label.anchor.set(0.5);
+  label.position.set(boxWidth / 2, boxHeight / 2); // CENTRADO dentro de bg
+
+  overlay.addChild(bg, label);
+
+  // Centramos todo el overlay en el centro de la pantalla
+  overlay.pivot.set(boxWidth / 2, boxHeight / 2);
+  overlay.position.set(app.screen.width / 2, app.screen.height / 2);
+
+  app.stage.addChild(overlay);
+
+  // Animación de aparición
+  overlay.alpha = 0;
+  gsap.to(overlay, {
+    alpha: 1,
+    duration: 0.8,
+    ease: "power2.out",
+  });
+
+  // Remover tras clic o tiempo
+  overlay.eventMode = "static";
+  overlay.cursor = "pointer";
+  overlay.on("pointerdown", () => app.stage.removeChild(overlay));
+  setTimeout(() => app.stage.removeChild(overlay), 4000);
+}
+
+
 
 boot();

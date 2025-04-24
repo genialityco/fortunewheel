@@ -8,6 +8,14 @@ import { Confetti } from "./Confetti";
 gsap.registerPlugin(PixiPlugin);
 PixiPlugin.registerPIXI(PIXI);
 
+// 🔊 Crear sonido de giro
+const spinSound = new Audio('/assets/sounds/spin.mp3');
+spinSound.volume = 0.7;
+
+const winSound = new Audio('/assets/sounds/winning.mp3');
+winSound.volume = 0.8;
+
+
 function hexToNumber(hex: string): number {
   return parseInt(hex.replace(/^#/, ""), 16);
 }
@@ -42,12 +50,9 @@ class Wheel extends PIXI.Container {
       segment.addChild(sprite);
 
       const mask = new PIXI.Graphics();
+      const innerRadius = radius - 2;
 
-      // Save the original radius
-      const innerRadius = radius - 2; // 2px smaller for a subtle bevel
-
-      // Inner Bevel Gradient Simulation (drawn BEFORE the main arc)
-      mask.beginFill(0xffffff, 0.2); // Lower alpha for a subtle effect
+      mask.beginFill(0xffffff, 0.2);
       mask.moveTo(0, 0);
       mask.arc(0, 0, innerRadius, i * sliceAngle, (i + 1) * sliceAngle);
       mask.lineTo(0, 0);
@@ -58,21 +63,17 @@ class Wheel extends PIXI.Container {
       mask.arc(0, 0, radius, i * sliceAngle, (i + 1) * sliceAngle);
       mask.lineTo(0, 0);
       mask.endFill();
-      // Enhanced Stroke for sharper edges
+
       mask.lineStyle({
-        width: 4, // Slightly thinner than before for a more subtle look
+        width: 4,
         color: 0xffffff,
-        alpha: 1, // Fully opaque for sharpness
-        alignment: 0.5, // Center alignment for the stroke (inside and outside the arc)
-        cap: "round", // Use string value instead of PIXI.LINE_CAP.ROUND
-        join: "round", // Use string value instead of PIXI.LINE_JOIN.ROUND
+        alpha: 1,
+        alignment: 0.5,
+        cap: "round",
+        join: "round",
       });
 
-      //Add Edge Shine or Stroke, Highlight edges to fake beveling:
-      //new FillGradient(0, 0, 200, 0)
       mask.stroke({ width: 5, color: 0xffffff, alpha: 0.5 });
-
-      
       sprite.mask = mask;
       segment.addChild(mask);
 
@@ -99,6 +100,10 @@ class Wheel extends PIXI.Container {
   }
 
   spin(onComplete: (result: Prize) => void) {
+    // 🔊 Reproducir sonido al iniciar el giro
+    spinSound.currentTime = 0;
+    spinSound.play();
+
     const winnerIndex = weightedRandom(this.prizes);
     const sliceAngle = 360 / this.prizes.length;
     const targetRot = -(winnerIndex * sliceAngle) - sliceAngle / 2;
@@ -111,6 +116,12 @@ class Wheel extends PIXI.Container {
       duration: 5,
       ease: "power4.out",
       onComplete: () => {
+        spinSound.pause();
+        spinSound.currentTime = 0;
+
+        winSound.currentTime = 0;
+        winSound.play();
+
         this.rotation = this.rotation % (Math.PI * 2);
         this.ring.setMode("winner", winnerIndex);
         this.confetti.burst();
@@ -124,27 +135,20 @@ class Wheel extends PIXI.Container {
     const canvas = document.createElement("canvas");
     canvas.width = size;
     canvas.height = size;
-
     const ctx = canvas.getContext("2d")!;
-
-    // Create a smoother radial gradient
     const gradient = ctx.createRadialGradient(size / 2, size / 2, 20, size / 2, size / 2, size / 2);
-    gradient.addColorStop(0.1, "rgba(255,255,255,0.9)"); // center highlight
+    gradient.addColorStop(0.1, "rgba(255,255,255,0.9)");
     gradient.addColorStop(1, color);
-    //gradient.addColorStop(1, 'rgba(2, 2, 2, 0.5)') // subtle edge shadow
-
-    // Fill the gradient
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, size, size);
 
-    // Simulate handmade paper texture with noise
     const imageData = ctx.getImageData(0, 0, size, size);
     const data = imageData.data;
     for (let i = 0; i < data.length; i += 4) {
-      const noise = Math.floor(Math.random() * 20) - 10; // -10 to +10
-      data[i] += noise; // R
-      data[i + 1] += noise; // G
-      data[i + 2] += noise; // B
+      const noise = Math.floor(Math.random() * 20) - 10;
+      data[i] += noise;
+      data[i + 1] += noise;
+      data[i + 2] += noise;
     }
     ctx.putImageData(imageData, 0, 0);
 
@@ -182,7 +186,6 @@ export class WheelStand extends PIXI.Container {
     }
   }
 
-  // Add destroy method to clean up
   override destroy(options?: boolean | PIXI.IDestroyOptions) {
     if (this.wheel) this.wheel.destroy();
     if (this.fondoSprite) this.fondoSprite.destroy();
