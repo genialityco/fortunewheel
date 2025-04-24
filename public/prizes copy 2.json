@@ -1,0 +1,7 @@
+[
+    { "label": "🌟 1000 Coins", "prob": 0.05, "color": "#1B67D3" },
+    { "label": "💎  500 Coins", "prob": 0.10, "color": "#356DB4" },
+    { "label": "🍀  100 Coins", "prob": 0.20, "color": "#0B3689" },
+    { "label": "🎲   50 Coins", "prob": 0.25, "color": "#166AD0" },
+    { "label": "🔥   10 Coins", "prob": 0.40, "color": "#1953BD" }
+  ]

@@ -1,0 +1,36 @@
+[ {
+  "name": "azul",
+  "color": "#0000ff",
+  "prizes": [
+    { "label": "🌟 Mochila", "prob": 0.05, "color": "#1B67D3" },
+    { "label": "💎 Cuaderno", "prob": 0.10, "color": "#356DB4" },
+    { "label": "🍀  Bolsas", "prob": 0.20, "color": "#0B3689" },
+    { "label": "🎲   x", "prob": 0.25, "color": "#166AD0" },
+    { "label": "🔥   y", "prob": 0.40, "color": "#1953BD" }
+  ]
+ },
+ {
+  "name": "dorada",
+  "color": "#ff00ff",
+  "prizes": [
+    { "label": "🌟 Esferos", "prob": 0.05, "color": "#FFD700" },
+    { "label": "💎  lapices", "prob": 0.10, "color": "#E6C200" }, 
+    { "label": "🍀  Colores", "prob": 0.20, "color": "#CCAA00" },
+    { "label": "🎲   Borradores", "prob": 0.25, "color": "#B28F00" }, 
+    { "label": "🔥   Canicas", "prob": 0.40, "color": "#997700" } 
+  ]
+ },
+ {
+  "name": "verde",
+  "color": "#00ff00",
+  "prizes": [
+    { "label": "🌟 Viaje a la luna", "prob": 0.05, "color": "#00FF66" }, 
+    { "label": "🍀  x", "prob": 0.20, "color": "#339966" },
+    { "label": "🎲   mm", "prob": 0.25, "color": "#2A7A52" }, 
+    { "label": "🔥   cc", "prob": 0.40, "color": "#1E4D33" }  
+  ]
+ }
+ 
+ 
+ ]
+ 

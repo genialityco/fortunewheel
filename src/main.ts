@@ -1,0 +1,152 @@
+import * as PIXI from "pixi.js";
+import { WheelStand } from "./core/Wheel";
+import { LEDRing } from "./core/LEDRing";
+import { Confetti } from "./core/Confetti";
+import { Marker } from "./core/Marker";
+import { BlurFilter } from "@pixi/filter-blur";
+
+async function boot() {
+  const app = new PIXI.Application();
+  await app.init({ background: "#101020", resizeTo: window });
+  document.body.appendChild(app.canvas);
+
+  // --- Add FONDO.png as PIXI background ---
+  const fondoTexture = await PIXI.Assets.load("/assets/FONDO.png");
+  const fondo = new PIXI.Sprite(fondoTexture);
+  fondo.anchor.set(0.5);
+  fondo.position.set(window.innerWidth / 2, window.innerHeight / 2);
+  // Scale to cover the screen, preserving aspect ratio
+  const scale = Math.max(window.innerWidth / fondoTexture.width, window.innerHeight / fondoTexture.height);
+  fondo.scale.set(scale);
+  app.stage.addChild(fondo);
+  // ----------------------------------------
+
+  // Load all wheel configurations
+  const configs = await (await fetch("/prizes.json")).json();
+  let activeConfigIndex = 0;
+
+  const ring = new LEDRing();
+  const confetti = new Confetti();
+  let wheel = new WheelStand(configs[activeConfigIndex].prizes, ring, confetti);
+
+  wheel.position.set(window.innerWidth / 2, window.innerHeight / 2);
+  ring.position.copyFrom(wheel.position);
+  confetti.position.copyFrom(wheel.position);
+
+  // Add background first, then wheel/ring/confetti above
+  app.stage.addChild(wheel, ring, confetti);
+
+  // --- MENU BUTTONS ---
+  const buttonImages = ["/assets/BOTON_01.png", "/assets/BOTON_02.png", "/assets/BOTON_03.png"];
+  const menuContainer = new PIXI.Container();
+  const buttonScale = 0.45;
+
+  // Preload button textures to get their height for layout
+  const btnTextures = await Promise.all(buttonImages.map((img) => PIXI.Assets.load(img)));
+  const btnHeight = btnTextures[0].height * buttonScale;
+  const btnWidth = btnTextures[0].width * buttonScale;
+  const buttonSpacing = btnHeight - btnHeight / 3; // Only 6px gap between buttons
+
+  const menuX = 100;
+  const menuHeight = configs.length * buttonSpacing;
+  const menuY = window.innerHeight / 2 - menuHeight / 2;
+
+  // --- White degraded shadow for active button ---
+  const shadow = new PIXI.Graphics();
+  // Use a blur filter for the shadow
+  const blurFilter = new BlurFilter({ strength: 8 });
+  shadow.filters = [blurFilter];
+
+  // --- Highlight for active button ---
+  const highlight = new PIXI.Graphics();
+
+  function drawHighlight(x: number, y: number) {
+    highlight.clear();
+    highlight.lineStyle(10, 0xffffff, 1); // width, color, alpha
+    highlight.beginFill(0, 0); // transparent fill, required for stroke to show
+    highlight.drawRoundedRect(
+      x - (btnWidth / 2)-10,
+      y - (btnHeight / 4)-10,
+      btnWidth-27,
+      btnHeight/2+20,
+      50
+    );
+    highlight.endFill();
+  }
+  // --- END Highlight ---
+
+  function drawShadow(x: number, y: number) {
+    shadow.clear();
+    // Draw a white ellipse, faded (alpha)
+    shadow.beginFill(0xffffff, 0.35);
+    shadow.drawEllipse(x, y, btnWidth / 2, btnHeight / 2);
+    shadow.endFill();
+  }
+  // Store button references for shadow/highlight movement
+  const menuButtons: PIXI.Sprite[] = [];
+
+  for (let i = 0; i < configs.length; i++) {
+    const btnTexture = btnTextures[i % btnTextures.length];
+    const btn = new PIXI.Sprite(btnTexture);
+    btn.anchor.set(0.5);
+    btn.scale.set(buttonScale);
+    // Calculate y so buttons are evenly spaced and menu is vertically centered
+    const btnY = menuY + i * buttonSpacing;
+    btn.position.set(menuX, btnY);
+    btn.eventMode = "static";
+    btn.cursor = "pointer";
+
+    btn.on("pointerdown", () => {
+      if (activeConfigIndex === i) return;
+      activeConfigIndex = i;
+      app.stage.removeChild(wheel);
+      wheel.destroy();
+      wheel = new WheelStand(configs[activeConfigIndex].prizes, ring, confetti);
+      wheel.position.set(window.innerWidth / 2, window.innerHeight / 2);
+      app.stage.addChildAt(wheel, 1);
+      ring.position.copyFrom(wheel.position);
+      confetti.position.copyFrom(wheel.position);
+      // Move shadow and highlight to new active button
+      const activeBtn = menuButtons[activeConfigIndex];
+      //drawShadow(activeBtn.position.x, activeBtn.position.y)
+      drawHighlight(activeBtn.position.x, activeBtn.position.y);
+      menuContainer.setChildIndex(shadow, 0);
+      menuContainer.setChildIndex(highlight, 1);
+    });
+    // Add config name label INSIDE button, centered
+    const labelStyle = new PIXI.TextStyle({
+      fontFamily: "Luckiest Guy, sans-serif",
+      fontSize: 35,
+      fill: "#fff",
+      align: "center",
+      dropShadow: true,
+      dropShadowDistance: 2,
+    });
+    const label = new PIXI.Text(configs[i].name.toUpperCase(), labelStyle);
+    label.anchor.set(0.5);
+    label.position.set(menuX, btnY);
+    menuContainer.addChild(btn, label);
+    menuButtons.push(btn);
+  }
+
+  // Draw initial shadow and highlight behind the first button
+  //drawShadow(menuButtons[activeConfigIndex].position.x, menuButtons[activeConfigIndex].position.y)
+  drawHighlight(menuButtons[activeConfigIndex].position.x, menuButtons[activeConfigIndex].position.y);
+  menuContainer.addChildAt(shadow, 0);
+  menuContainer.addChildAt(highlight, 1);
+
+  app.stage.addChild(menuContainer);
+  // --- END MENU ---
+
+  // spin button
+  const buttonTexture = await PIXI.Assets.load("/assets/wheel_button.png");
+  const btn = new PIXI.Sprite(buttonTexture);
+  btn.anchor.set(0.5);
+  btn.scale.set(0.1);
+  btn.position.copyFrom(wheel.position);
+  btn.eventMode = "static";
+  btn.on("pointerdown", () => wheel.spin((prize) => alert(`You won ${prize.label}!`)));
+  app.stage.addChild(btn);
+}
+
+boot();

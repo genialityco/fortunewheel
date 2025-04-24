@@ -1,0 +1,22 @@
+{
+  "name": "pixi-wheel-of-fortune",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~5.7.2",
+    "vite": "^6.3.1"
+  },
+  "dependencies": {
+    "@pixi/filter-blur": "^7.4.3",
+    "@pixi/filter-glow": "^5.2.1",
+    "@pixi/particle-emitter": "^5.0.8",
+    "gsap": "^3.12.7",
+    "pixi.js": "^8.9.1"
+  }
+}
