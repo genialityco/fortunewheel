@@ -63,7 +63,7 @@ async function boot() {
   // --- MENU BUTTONS ---
   const buttonImages = ["/assets/BOTON_01.png", "/assets/BOTON_02.png", "/assets/BOTON_03.png"];
   const menuContainer = new PIXI.Container();
-  const buttonScale = 0.3;
+  const buttonScale = 0.25;
 
   // Preload button textures to get their height for layout
   const btnTextures = await Promise.all(buttonImages.map((img) => PIXI.Assets.load(img)));
@@ -179,7 +179,7 @@ async function boot() {
     // Add config name label INSIDE button, centered
     const labelStyle = new PIXI.TextStyle({
       fontFamily: "Montserrat, sans-serif",
-      fontSize: 35,
+      fontSize: 25,
       fontWeight: "700",
       fill: "#fff",
       align: "center",
@@ -231,8 +231,8 @@ async function boot() {
   moneda2.scale.set(0.2);
 
   // Position MONEDA_01 to the left of the wheel and MONEDA_02 to the right
-  moneda1.position.set(wheel.position.x - wheel.width / 2, wheel.position.y+150);
-  moneda2.position.set(wheel.position.x + wheel.width / 2, wheel.position.y+150);
+  moneda1.position.set(wheel.position.x - wheel.width / 2.8, wheel.position.y+180);
+  moneda2.position.set(wheel.position.x + wheel.width / 2.8, wheel.position.y+150);
 
   // Add floating animation using gsap
   function animateFloating(sprite: PIXI.Sprite) {
@@ -248,7 +248,15 @@ async function boot() {
   animateFloating(moneda1);
   animateFloating(moneda2);
 
-  app.stage.addChild(moneda1, moneda2);
+  app.stage.addChild(moneda1, moneda2);  
+  
+  const legalesTexture = await PIXI.Assets.load("/assets/LEGALES.png");
+  const legales = new PIXI.Sprite(legalesTexture);
+  legales.anchor.set(0.5, 1);
+  legales.scale.set((app.screen.width * 0.8) / legalesTexture.width);
+  legales.position.set(app.screen.width/2, app.screen.height - 10);
+  app.stage.addChild(legales);
+
 }
 
 function showPrizeOverlay(app: PIXI.Application, prize: string) {

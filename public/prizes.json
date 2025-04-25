@@ -1,6 +1,6 @@
 [
   {
-    "name": "RITMO",
+    "name": "ORO",
     "color": "#0000FF",
     "prizes": [
       { "label": "VASO", "prob": 0.05, "color": "#1B67D3" },
@@ -16,7 +16,7 @@
     ]
   },
   {
-    "name": "DORADO",
+    "name": "ELITE",
     "color": "#FF00FF",
     "prizes": [
       { "label": "TERMO", "prob": 0.05, "color": "#FFD700" },
@@ -32,7 +32,7 @@
     ]
   },
   {
-    "name": "BOOM",
+    "name": "EXCLUSIVO",
     "color": "#00FF00",
     "prizes": [
       { "label": "TERMO", "prob": 0.05, "color": "#00FF66" },
