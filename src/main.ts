@@ -63,13 +63,13 @@ async function boot() {
 
   function drawHighlight(x: number, y: number) {
     highlight.clear();
-    highlight.lineStyle(10, 0xffffff, 1); // width, color, alpha
+    highlight.lineStyle(5, 0xffffff, 1); // width, color, alpha
     highlight.beginFill(0, 0); // transparent fill, required for stroke to show
     highlight.drawRoundedRect(
       x - (btnWidth / 2),
-      y - (btnHeight / 4)-10,
+      y - (btnHeight / 4)-5,
       btnWidth-27,
-      btnHeight/2+20,
+      btnHeight/2+10,
       30
     );
     highlight.endFill();

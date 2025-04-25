@@ -1,36 +1,34 @@
-[ {
-  "name": "azul",
-  "color": "#0000ff",
-  "prizes": [
-    { "label": "🌟 Vaso cervecero", "prob": 0.05, "color": "#1B67D3" },
-    { "label": "💎 Shot", "prob": 0.10, "color": "#356DB4" },
-    { "label": "🍀 Mug", "prob": 0.20, "color": "#0B3689" },
-    { "label": "🎲 Tulas", "prob": 0.25, "color": "#166AD0" },
-    { "label": "🔥 abanico", "prob": 0.40, "color": "#1953BD" }
-  ]
- },
- {
-  "name": "dorada",
-  "color": "#ff00ff",
-  "prizes": [
-    { "label": "🌟 Termos", "prob": 0.05, "color": "#FFD700" },
-    { "label": "💎 Shot", "prob": 0.10, "color": "#E6C200" }, 
-    { "label": "🍀 Gorra", "prob": 0.20, "color": "#CCAA00" },
-    { "label": "🎲 Pañoleta", "prob": 0.25, "color": "#B28F00" }, 
-    { "label": "🔥 Cuadernos - Carpas", "prob": 0.40, "color": "#997700" } 
-  ]
- },
- {
-  "name": "verde",
-  "color": "#00ff00",
-  "prizes": [
-    { "label": "🌟 Termo", "prob": 0.05, "color": "#00FF66" }, 
-    { "label": "🍀  Bono comida ", "prob": 0.20, "color": "#339966" },
-    { "label": "🎲  Cuadernos", "prob": 0.25, "color": "#2A7A52" }, 
-    { "label": "🔥  Pañoleta", "prob": 0.40, "color": "#1E4D33" }  
-  ]
- }
- 
-
- ]
- 
+[
+  {
+    "name": "RITMO",
+    "color": "#0000FF",
+    "prizes": [
+      { "label": "🥤 VASO", "prob": 0.05, "color": "#1B67D3" },
+      { "label": "🥃 SHOT", "prob": 0.10, "color": "#356DB4" },
+      { "label": "☕ MUG", "prob": 0.20, "color": "#0B3689" },
+      { "label": "🎒 TULAS", "prob": 0.25, "color": "#166AD0" },
+      { "label": "🌀 ABANICO", "prob": 0.40, "color": "#1953BD" }
+    ]
+  },
+  {
+    "name": "DORADO",
+    "color": "#FF00FF",
+    "prizes": [
+      { "label": "🌟 TERMO", "prob": 0.05, "color": "#FFD700" },
+      { "label": "🥃 SHOT", "prob": 0.10, "color": "#E6C200" },
+      { "label": "🧢 GORRA", "prob": 0.20, "color": "#CCAA00" },
+      { "label": "🧣 PAÑOLETA", "prob": 0.25, "color": "#B28F00" },
+      { "label": "📓 CUADERNOS", "prob": 0.40, "color": "#997700" }
+    ]
+  },
+  {
+    "name": "BOOM",
+    "color": "#00FF00",
+    "prizes": [
+      { "label": "🌟 TERMO", "prob": 0.05, "color": "#00FF66" },
+      { "label": "🍽️ BONO COMIDA", "prob": 0.20, "color": "#339966" },
+      { "label": "📓 CUADERNOS", "prob": 0.25, "color": "#2A7A52" },
+      { "label": "🧣 PAÑOLETA", "prob": 0.40, "color": "#1E4D33" }
+    ]
+  }
+]
