@@ -229,7 +229,7 @@ async function boot() {
   btn.scale.set(0.15);
   btn.position.copyFrom(wheel.position);
   btn.eventMode = "static";
-  
+
   let isSpinning = false;
 
   btn.on("pointerdown", () => {
@@ -241,7 +241,27 @@ async function boot() {
     });
   });
 
+  const btn2 = new PIXI.Sprite(buttonTexture);
+  btn2.anchor.set(0.5);
+  btn2.scale.set(0.15);
+  const offsetX = 220; // ajusta este valor a tu gusto
+btn2.position.set(
+  wheel.position.x + offsetX,
+  wheel.position.y
+);
+  btn2.eventMode = "static";
+  
+  btn2.on("pointerdown", () => {
+    if (isSpinning) return;
+    isSpinning = true;
+    wheel.spin((prize) => {
+      showPrizeOverlay(app, prize.label);
+      isSpinning = false;
+    });
+  });
+
   app.stage.addChild(btn);
+  app.stage.addChild(btn2);
 
   // Load MONEDA_01.png and MONEDA_02.png and add them to the left and right of the wheel
   const moneda1Texture = await PIXI.Assets.load("/assets/MONEDA_01.png");

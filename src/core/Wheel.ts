@@ -188,9 +188,9 @@ export class WheelStand extends PIXI.Container {
     const fondoTexture = await PIXI.Assets.load("/assets/fondo_ruleta.png");
     this.fondoSprite = new PIXI.Sprite(fondoTexture);
     this.fondoSprite.anchor.set(0.5);
-    this.fondoSprite.position.set(15, -15);
-    this.fondoSprite.width = (radius + 230) * 2;
-    this.fondoSprite.height = (radius + 226) * 2;
+    this.fondoSprite.position.set(5, -15);
+    this.fondoSprite.width = (radius + 200) * 2;
+    this.fondoSprite.height = (radius + 200) * 2;
     this.addChild(this.fondoSprite);
   }
 
