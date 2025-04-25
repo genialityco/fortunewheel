@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js";
-import { GifSprite } from 'pixi.js/gif';
+import { GifSprite } from "pixi.js/gif";
 import { WheelStand } from "./core/Wheel";
 import { LEDRing } from "./core/LEDRing";
 import { Confetti } from "./core/Confetti";
 import gsap from "gsap";
 import { Marker } from "./core/Marker";
 import { BlurFilter } from "@pixi/filter-blur";
-import { GlowFilter } from '@pixi/filter-glow';
+import { GlowFilter } from "@pixi/filter-glow";
 
 async function boot() {
   const app = new PIXI.Application();
@@ -27,7 +27,10 @@ async function boot() {
   fondo.position.set(window.innerWidth / 2, window.innerHeight / 2);
 
   // Scale to cover the screen, preserving aspect ratio
-  const scale = Math.max(window.innerWidth / videoElement.videoWidth, window.innerHeight / videoElement.videoHeight);
+  const scale = Math.max(
+    window.innerWidth / videoElement.videoWidth,
+    window.innerHeight / videoElement.videoHeight
+  );
   fondo.scale.set(scale);
 
   app.stage.addChild(fondo);
@@ -39,7 +42,11 @@ async function boot() {
   monedas.position.set(window.innerWidth / 2, window.innerHeight / 2);
 
   // Scale to half of the original size
-  const monedasScale = Math.max(window.innerWidth / monedasTexture.width, window.innerHeight / monedasTexture.height) / 1.5;
+  const monedasScale =
+    Math.max(
+      window.innerWidth / monedasTexture.width,
+      window.innerHeight / monedasTexture.height
+    ) / 1.5;
   monedas.scale.set(monedasScale);
 
   app.stage.addChild(monedas);
@@ -61,12 +68,18 @@ async function boot() {
   app.stage.addChild(wheel, ring, confetti);
 
   // --- MENU BUTTONS ---
-  const buttonImages = ["/assets/BOTON_01.png", "/assets/BOTON_02.png", "/assets/BOTON_03.png"];
+  const buttonImages = [
+    "/assets/BOTON_01.png",
+    "/assets/BOTON_02.png",
+    "/assets/BOTON_03.png",
+  ];
   const menuContainer = new PIXI.Container();
   const buttonScale = 0.25;
 
   // Preload button textures to get their height for layout
-  const btnTextures = await Promise.all(buttonImages.map((img) => PIXI.Assets.load(img)));
+  const btnTextures = await Promise.all(
+    buttonImages.map((img) => PIXI.Assets.load(img))
+  );
   const btnHeight = btnTextures[0].height * buttonScale;
   const btnWidth = btnTextures[0].width * buttonScale;
   const buttonSpacing = btnHeight - btnHeight / 3; // Only 6px gap between buttons
@@ -89,10 +102,10 @@ async function boot() {
     highlight.lineStyle(5, 0xffffff, 1); // width, color, alpha
     highlight.beginFill(0, 0); // transparent fill, required for stroke to show
     highlight.drawRoundedRect(
-      x - (btnWidth / 2),
-      y - (btnHeight / 4)-5,
-      btnWidth-27,
-      btnHeight/2+10,
+      x - btnWidth / 2,
+      y - btnHeight / 4 - 5,
+      btnWidth - 27,
+      btnHeight / 2 + 10,
       30
     );
     highlight.endFill();
@@ -149,7 +162,12 @@ async function boot() {
       // Add shining effect to the wheel
       const shine = new PIXI.Graphics();
       shine.beginFill(0xffffff, 0.5);
-      shine.drawRect(-wheel.width / 2, -wheel.height / 2, wheel.width, wheel.height);
+      shine.drawRect(
+        -wheel.width / 2,
+        -wheel.height / 2,
+        wheel.width,
+        wheel.height
+      );
       shine.endFill();
       shine.blendMode = 1; // Use numeric value for additive blend mode
       wheel.addChild(shine);
@@ -194,7 +212,10 @@ async function boot() {
   }
 
   // Draw initial shadow and highlight behind the first button
-  drawHighlight(menuButtons[activeConfigIndex].position.x, menuButtons[activeConfigIndex].position.y);
+  drawHighlight(
+    menuButtons[activeConfigIndex].position.x,
+    menuButtons[activeConfigIndex].position.y
+  );
   menuContainer.addChildAt(shadow, 0);
   menuContainer.addChildAt(highlight, 1);
 
@@ -208,12 +229,18 @@ async function boot() {
   btn.scale.set(0.15);
   btn.position.copyFrom(wheel.position);
   btn.eventMode = "static";
+  
+  let isSpinning = false;
+
   btn.on("pointerdown", () => {
+    if (isSpinning) return;
+    isSpinning = true;
     wheel.spin((prize) => {
       showPrizeOverlay(app, prize.label);
+      isSpinning = false;
     });
   });
-  
+
   app.stage.addChild(btn);
 
   // Load MONEDA_01.png and MONEDA_02.png and add them to the left and right of the wheel
@@ -231,8 +258,14 @@ async function boot() {
   moneda2.scale.set(0.2);
 
   // Position MONEDA_01 to the left of the wheel and MONEDA_02 to the right
-  moneda1.position.set(wheel.position.x - wheel.width / 2.8, wheel.position.y+180);
-  moneda2.position.set(wheel.position.x + wheel.width / 2.8, wheel.position.y+150);
+  moneda1.position.set(
+    wheel.position.x - wheel.width / 2.8,
+    wheel.position.y + 180
+  );
+  moneda2.position.set(
+    wheel.position.x + wheel.width / 2.8,
+    wheel.position.y + 150
+  );
 
   // Add floating animation using gsap
   function animateFloating(sprite: PIXI.Sprite) {
@@ -248,15 +281,14 @@ async function boot() {
   animateFloating(moneda1);
   animateFloating(moneda2);
 
-  app.stage.addChild(moneda1, moneda2);  
-  
+  app.stage.addChild(moneda1, moneda2);
+
   const legalesTexture = await PIXI.Assets.load("/assets/LEGALES.png");
   const legales = new PIXI.Sprite(legalesTexture);
   legales.anchor.set(0.5, 1);
   legales.scale.set((app.screen.width * 0.8) / legalesTexture.width);
-  legales.position.set(app.screen.width/2, app.screen.height - 10);
+  legales.position.set(app.screen.width / 2, app.screen.height - 10);
   app.stage.addChild(legales);
-
 }
 
 function showPrizeOverlay(app: PIXI.Application, prize: string) {

@@ -97,6 +97,7 @@ class Wheel extends PIXI.Container {
         align: "center",
         wordWrap: true,
         wordWrapWidth: radius * 1.2,
+        lineHeight: 8
       });
       
       const txt = new PIXI.Text(p.label, style);
