@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { GifSprite } from 'pixi.js/gif';
 import { WheelStand } from "./core/Wheel";
 import { LEDRing } from "./core/LEDRing";
 import { Confetti } from "./core/Confetti";
@@ -11,9 +12,11 @@ async function boot() {
   await app.init({ background: "#101020", resizeTo: window });
   document.body.appendChild(app.canvas);
 
+
+  //const gif = new GifSprite({ source, x: window.innerWidth / 2, y: window.innerHeight / 2, anchor: 0.5 });
   // --- Add FONDO.png as PIXI background ---
-  const fondoTexture = await PIXI.Assets.load("/assets/FONDO.png");
-  const fondo = new PIXI.Sprite(fondoTexture);
+  const fondoTexture = await PIXI.Assets.load("/assets/FONDO_MALUMA.gif");
+  const fondo = new GifSprite( {source:fondoTexture, x: window.innerWidth / 2, y: window.innerHeight / 2, anchor: 0.5 });
   fondo.anchor.set(0.5);
   fondo.position.set(window.innerWidth / 2, window.innerHeight / 2);
   // Scale to cover the screen, preserving aspect ratio
@@ -116,8 +119,9 @@ async function boot() {
     });
     // Add config name label INSIDE button, centered
     const labelStyle = new PIXI.TextStyle({
-      fontFamily: "Luckiest Guy, sans-serif",
+      fontFamily: "Montserrat, sans-serif",
       fontSize: 35,
+      fontWeight: "700",
       fill: "#fff",
       align: "center",
       dropShadow: true,

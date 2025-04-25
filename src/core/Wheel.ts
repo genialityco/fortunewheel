@@ -84,8 +84,9 @@ class Wheel extends PIXI.Container {
 
     this.prizes.forEach((p, i) => {
       const style = new PIXI.TextStyle({
-        fontFamily: "Luckiest Guy, sans-serif",
+        fontFamily: "Montserrat, sans-serif",
         fontSize: 24,
+        fontWeight: "700",
         fill: "#fff",
         dropShadow: true,
         dropShadowDistance: 2,
