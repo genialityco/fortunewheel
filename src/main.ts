@@ -39,7 +39,7 @@ async function boot() {
   // --- MENU BUTTONS ---
   const buttonImages = ["/assets/BOTON_01.png", "/assets/BOTON_02.png", "/assets/BOTON_03.png"];
   const menuContainer = new PIXI.Container();
-  const buttonScale = 0.45;
+  const buttonScale = 0.3;
 
   // Preload button textures to get their height for layout
   const btnTextures = await Promise.all(buttonImages.map((img) => PIXI.Assets.load(img)));
@@ -65,11 +65,11 @@ async function boot() {
     highlight.lineStyle(10, 0xffffff, 1); // width, color, alpha
     highlight.beginFill(0, 0); // transparent fill, required for stroke to show
     highlight.drawRoundedRect(
-      x - (btnWidth / 2)-10,
+      x - (btnWidth / 2),
       y - (btnHeight / 4)-10,
       btnWidth-27,
       btnHeight/2+20,
-      50
+      30
     );
     highlight.endFill();
   }
@@ -78,7 +78,7 @@ async function boot() {
   function drawShadow(x: number, y: number) {
     shadow.clear();
     // Draw a white ellipse, faded (alpha)
-    shadow.beginFill(0xffffff, 0.35);
+    shadow.beginFill(0xffffff, 0.28);
     shadow.drawEllipse(x, y, btnWidth / 2, btnHeight / 2);
     shadow.endFill();
   }

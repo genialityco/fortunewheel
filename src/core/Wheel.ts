@@ -28,7 +28,7 @@ class Wheel extends PIXI.Container {
   }
 
   private async build() {
-    const radius = 250;
+    const radius = 210;
     const sliceAngle = (Math.PI * 2) / this.prizes.length;
 
     this.prizes.forEach((p, i) => {
@@ -163,11 +163,11 @@ export class WheelStand extends PIXI.Container {
   }
 
   private async build(prizes: Prize[], ring: LEDRing, confetti: Confetti) {
-    const radius = 250;
+    const radius = 150;
     const fondoTexture = await PIXI.Assets.load("/assets/fondo_ruleta.png");
     this.fondoSprite = new PIXI.Sprite(fondoTexture);
     this.fondoSprite.anchor.set(0.5);
-    this.fondoSprite.position.set(21, -23);
+    this.fondoSprite.position.set(15, -15);
     this.fondoSprite.width = (radius + 230) * 2;
     this.fondoSprite.height = (radius + 226) * 2;
     this.addChild(this.fondoSprite);
