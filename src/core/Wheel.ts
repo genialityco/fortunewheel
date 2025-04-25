@@ -85,17 +85,21 @@ class Wheel extends PIXI.Container {
     this.prizes.forEach((p, i) => {
       const style = new PIXI.TextStyle({
         fontFamily: "Montserrat, sans-serif",
-        fontSize: 24,
+        fontSize: 17.006112, // Reduced font size by another 10% of the current size (18.89568 * 0.9)
         fontWeight: "700",
         fill: "#fff",
         dropShadow: true,
         dropShadowDistance: 2,
+        lineHeight: 20, // Existing reduced line interspacing
       });
       const txt = new PIXI.Text(p.label, style);
       txt.anchor.set(0.5, 0.5);
       const theta = (i + 0.5) * sliceAngle;
-      txt.position.set(Math.cos(theta - Math.PI / 2) * radius * 0.75, Math.sin(theta - Math.PI / 2) * radius * 0.75);
-      txt.rotation = theta;
+      txt.position.set(
+        Math.cos(theta - Math.PI / 2) * radius * 0.65,
+        Math.sin(theta - Math.PI / 2) * radius * 0.65
+      );
+      txt.rotation = theta - Math.PI / 2; // Adjust rotation for radial orientation
       this.addChild(txt);
     });
   }

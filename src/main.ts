@@ -31,6 +31,18 @@ async function boot() {
   fondo.scale.set(scale);
 
   app.stage.addChild(fondo);
+
+  // --- Add MONEDAS.png as another background layer ---
+  const monedasTexture = await PIXI.Assets.load("/assets/MONEDAS.png");
+  const monedas = new PIXI.Sprite(monedasTexture);
+  monedas.anchor.set(0.5);
+  monedas.position.set(window.innerWidth / 2, window.innerHeight / 2);
+
+  // Scale to half of the original size
+  const monedasScale = Math.max(window.innerWidth / monedasTexture.width, window.innerHeight / monedasTexture.height) / 1.5;
+  monedas.scale.set(monedasScale);
+
+  app.stage.addChild(monedas);
   // ----------------------------------------
 
   // Load all wheel configurations
@@ -193,7 +205,7 @@ async function boot() {
   const buttonTexture = await PIXI.Assets.load("/assets/wheel_button.png");
   const btn = new PIXI.Sprite(buttonTexture);
   btn.anchor.set(0.5);
-  btn.scale.set(0.1);
+  btn.scale.set(0.15);
   btn.position.copyFrom(wheel.position);
   btn.eventMode = "static";
   btn.on("pointerdown", () => {
@@ -219,7 +231,7 @@ function showPrizeOverlay(app: PIXI.Application, prize: string) {
   // Texto centrado dentro del fondo
   const textStyle = new PIXI.TextStyle({
     fontFamily: "Luckiest Guy, sans-serif",
-    fontSize: 48,
+    fontSize: 57.6, // Increased font size by 20% of the original (48 * 1.2)
     fill: "#ffff00",
     align: "center",
     dropShadow: true,
