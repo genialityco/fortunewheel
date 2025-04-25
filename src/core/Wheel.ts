@@ -85,13 +85,20 @@ class Wheel extends PIXI.Container {
     this.prizes.forEach((p, i) => {
       const style = new PIXI.TextStyle({
         fontFamily: "Montserrat, sans-serif",
-        fontSize: 17.006112, // Reduced font size by another 10% of the current size (18.89568 * 0.9)
-        fontWeight: "700",
-        fill: "#fff",
+        fontSize: 20,
+        fontWeight: "700", 
+        fill: "#ffffff",
+        stroke: "#000000", 
+        strokeThickness: 0,
         dropShadow: true,
+        dropShadowColor: "#000000",
+        dropShadowBlur: 4,
         dropShadowDistance: 2,
-        lineHeight: 20, // Existing reduced line interspacing
+        align: "center",
+        wordWrap: true,
+        wordWrapWidth: radius * 1.2,
       });
+      
       const txt = new PIXI.Text(p.label, style);
       txt.anchor.set(0.5, 0.5);
       const theta = (i + 0.5) * sliceAngle;
@@ -173,6 +180,10 @@ export class WheelStand extends PIXI.Container {
 
   private async build(prizes: Prize[], ring: LEDRing, confetti: Confetti) {
     const radius = 150;
+
+    this.wheel = new Wheel(prizes, ring, confetti);
+    this.addChild(this.wheel);
+    
     const fondoTexture = await PIXI.Assets.load("/assets/fondo_ruleta.png");
     this.fondoSprite = new PIXI.Sprite(fondoTexture);
     this.fondoSprite.anchor.set(0.5);
@@ -180,9 +191,6 @@ export class WheelStand extends PIXI.Container {
     this.fondoSprite.width = (radius + 230) * 2;
     this.fondoSprite.height = (radius + 226) * 2;
     this.addChild(this.fondoSprite);
-
-    this.wheel = new Wheel(prizes, ring, confetti);
-    this.addChild(this.wheel);
   }
 
   spin(onComplete: (result: Prize) => void) {
