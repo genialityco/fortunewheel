@@ -3,42 +3,42 @@
     "name": "ORO",
     "color": "#0000FF",
     "prizes": [
-      { "label": "VASO", "prob": 0.05, "color": "#1B67D3" },
-      { "label": "MUG", "prob": 0.20, "color": "#0B3689" },
-      { "label": "TULAS", "prob": 0.25, "color": "#166AD0" },
-      { "label": "ABANICO", "prob": 0.40, "color": "#1953BD" },
-      { "label": "VASO", "prob": 0.05, "color": "#1B67D3" },
-      { "label": "MUG", "prob": 0.20, "color": "#0B3689" },
-      { "label": "TULAS", "prob": 0.25, "color": "#166AD0" },
-      { "label": "ABANICO", "prob": 0.40, "color": "#1953BD" }
+      { "label": "VASO",    "prob": 0.027778, "color": "#1B67D3" },
+      { "label": "MUG",     "prob": 0.111111, "color": "#0B3689" },
+      { "label": "TULAS",   "prob": 0.138889, "color": "#166AD0" },
+      { "label": "ABANICO", "prob": 0.222222, "color": "#1953BD" },
+      { "label": "VASO",    "prob": 0.027778, "color": "#1B67D3" },
+      { "label": "MUG",     "prob": 0.111111, "color": "#0B3689" },
+      { "label": "TULAS",   "prob": 0.138889, "color": "#166AD0" },
+      { "label": "ABANICO", "prob": 0.222222, "color": "#1953BD" }
     ]
   },
   {
     "name": "ELITE",
     "color": "#FF00FF",
     "prizes": [
-      { "label": "TERMO", "prob": 0.05, "color": "#FFD700" },
-      { "label": "GORRA", "prob": 0.20, "color": "#CCAA00" },
-      { "label": "PAÑOLETA", "prob": 0.25, "color": "#B28F00" },
-      { "label": "CUADERNOS", "prob": 0.40, "color": "#997700" },
-      { "label": "TERMO", "prob": 0.05, "color": "#FFD700" },
-      { "label": "GORRA", "prob": 0.20, "color": "#CCAA00" },
-      { "label": "PAÑOLETA", "prob": 0.25, "color": "#B28F00" },
-      { "label": "CUADERNOS", "prob": 0.40, "color": "#997700" }
+      { "label": "TERMO",      "prob": 0.027778, "color": "#FFD700" },
+      { "label": "GORRA",      "prob": 0.111111, "color": "#CCAA00" },
+      { "label": "PAÑOLETA",   "prob": 0.138889, "color": "#B28F00" },
+      { "label": "CUADERNOS",  "prob": 0.222222, "color": "#997700" },
+      { "label": "TERMO",      "prob": 0.027778, "color": "#FFD700" },
+      { "label": "GORRA",      "prob": 0.111111, "color": "#CCAA00" },
+      { "label": "PAÑOLETA",   "prob": 0.138889, "color": "#B28F00" },
+      { "label": "CUADERNOS",  "prob": 0.222222, "color": "#997700" }
     ]
   },
   {
     "name": "EXCLUSIVO",
     "color": "#00FF00",
     "prizes": [
-      { "label": "TERMO", "prob": 0.05, "color": "#00FF66" },
-      { "label": "BONO \n\r COMIDA", "prob": 0.20, "color": "#339966" },
-      { "label": "CUADERNOS", "prob": 0.25, "color": "#2A7A52" },
-      { "label": "PAÑOLETA", "prob": 0.40, "color": "#1E4D33" },
-      { "label": "TERMO", "prob": 0.05, "color": "#00FF66" },
-      { "label": "BONO \n\r COMIDA", "prob": 0.20, "color": "#339966" },
-      { "label": "CUADERNOS", "prob": 0.25, "color": "#2A7A52" },
-      { "label": "PAÑOLETA", "prob": 0.40, "color": "#1E4D33" }
+      { "label": "TERMO",           "prob": 0.027778, "color": "#00FF66" },
+      { "label": "BONO \n\r COMIDA", "prob": 0.111111, "color": "#339966" },
+      { "label": "CUADERNOS",       "prob": 0.138889, "color": "#2A7A52" },
+      { "label": "PAÑOLETA",        "prob": 0.222222, "color": "#1E4D33" },
+      { "label": "TERMO",           "prob": 0.027778, "color": "#00FF66" },
+      { "label": "BONO \n\r COMIDA", "prob": 0.111111, "color": "#339966" },
+      { "label": "CUADERNOS",       "prob": 0.138889, "color": "#2A7A52" },
+      { "label": "PAÑOLETA",        "prob": 0.222222, "color": "#1E4D33" }
     ]
   }
 ]
