@@ -6,22 +6,30 @@ import { Confetti } from "./core/Confetti";
 import gsap from "gsap";
 import { Marker } from "./core/Marker";
 import { BlurFilter } from "@pixi/filter-blur";
+import { GlowFilter } from '@pixi/filter-glow';
 
 async function boot() {
   const app = new PIXI.Application();
   await app.init({ background: "#101020", resizeTo: window });
   document.body.appendChild(app.canvas);
 
+  // --- Add FONDO_MALUMA.mp4 as PIXI video background ---
+  const videoElement = document.createElement("video");
+  videoElement.src = "/assets/FONDO_MALUMA.mp4";
+  videoElement.autoplay = true;
+  videoElement.loop = true;
+  videoElement.muted = true; // Ensure no audio plays
+  await videoElement.play();
 
-  //const gif = new GifSprite({ source, x: window.innerWidth / 2, y: window.innerHeight / 2, anchor: 0.5 });
-  // --- Add FONDO.png as PIXI background ---
-  const fondoTexture = await PIXI.Assets.load("/assets/FONDO_MALUMA.gif");
-  const fondo = new GifSprite( {source:fondoTexture, x: window.innerWidth / 2, y: window.innerHeight / 2, anchor: 0.5 });
+  const videoTexture = PIXI.Texture.from(videoElement);
+  const fondo = new PIXI.Sprite(videoTexture);
   fondo.anchor.set(0.5);
   fondo.position.set(window.innerWidth / 2, window.innerHeight / 2);
+
   // Scale to cover the screen, preserving aspect ratio
-  const scale = Math.max(window.innerWidth / fondoTexture.width, window.innerHeight / fondoTexture.height);
+  const scale = Math.max(window.innerWidth / videoElement.videoWidth, window.innerHeight / videoElement.videoHeight);
   fondo.scale.set(scale);
+
   app.stage.addChild(fondo);
   // ----------------------------------------
 
@@ -103,6 +111,45 @@ async function boot() {
     btn.on("pointerdown", () => {
       if (activeConfigIndex === i) return;
       activeConfigIndex = i;
+
+      // Add glowing effect to the wheel
+      const glowFilter = new GlowFilter({
+        distance: 15,
+        outerStrength: 2,
+        innerStrength: 1,
+        color: 0xffff00,
+        quality: 0.5,
+      });
+      wheel.filters = [glowFilter];
+
+      // Animate the glow effect
+      gsap.to(glowFilter, {
+        outerStrength: 5,
+        innerStrength: 3,
+        duration: 0.5,
+        yoyo: true,
+        repeat: 1,
+        onComplete: () => {
+          wheel.filters = null; // Remove the glow effect after animation
+        },
+      });
+
+      // Add shining effect to the wheel
+      const shine = new PIXI.Graphics();
+      shine.beginFill(0xffffff, 0.5);
+      shine.drawRect(-wheel.width / 2, -wheel.height / 2, wheel.width, wheel.height);
+      shine.endFill();
+      shine.blendMode = 1; // Use numeric value for additive blend mode
+      wheel.addChild(shine);
+
+      gsap.to(shine, {
+        alpha: 0,
+        duration: 0.5,
+        onComplete: () => {
+          wheel.removeChild(shine); // Remove the shine effect after animation
+        },
+      });
+
       app.stage.removeChild(wheel);
       wheel.destroy();
       wheel = new WheelStand(configs[activeConfigIndex].prizes, ring, confetti);
@@ -110,9 +157,9 @@ async function boot() {
       app.stage.addChildAt(wheel, 1);
       ring.position.copyFrom(wheel.position);
       confetti.position.copyFrom(wheel.position);
+
       // Move shadow and highlight to new active button
       const activeBtn = menuButtons[activeConfigIndex];
-      //drawShadow(activeBtn.position.x, activeBtn.position.y)
       drawHighlight(activeBtn.position.x, activeBtn.position.y);
       menuContainer.setChildIndex(shadow, 0);
       menuContainer.setChildIndex(highlight, 1);
@@ -135,7 +182,6 @@ async function boot() {
   }
 
   // Draw initial shadow and highlight behind the first button
-  //drawShadow(menuButtons[activeConfigIndex].position.x, menuButtons[activeConfigIndex].position.y)
   drawHighlight(menuButtons[activeConfigIndex].position.x, menuButtons[activeConfigIndex].position.y);
   menuContainer.addChildAt(shadow, 0);
   menuContainer.addChildAt(highlight, 1);
@@ -208,7 +254,5 @@ function showPrizeOverlay(app: PIXI.Application, prize: string) {
   overlay.on("pointerdown", () => app.stage.removeChild(overlay));
   setTimeout(() => app.stage.removeChild(overlay), 4000);
 }
-
-
 
 boot();
