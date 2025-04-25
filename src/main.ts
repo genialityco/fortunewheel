@@ -215,6 +215,40 @@ async function boot() {
   });
   
   app.stage.addChild(btn);
+
+  // Load MONEDA_01.png and MONEDA_02.png and add them to the left and right of the wheel
+  const moneda1Texture = await PIXI.Assets.load("/assets/MONEDA_01.png");
+  const moneda2Texture = await PIXI.Assets.load("/assets/MONEDA_02.png");
+
+  const moneda1 = new PIXI.Sprite(moneda1Texture);
+  const moneda2 = new PIXI.Sprite(moneda2Texture);
+
+  moneda1.anchor.set(0.5);
+  moneda2.anchor.set(0.5);
+
+  // Scale down the size of the sprites
+  moneda1.scale.set(0.2);
+  moneda2.scale.set(0.2);
+
+  // Position MONEDA_01 to the left of the wheel and MONEDA_02 to the right
+  moneda1.position.set(wheel.position.x - wheel.width / 2, wheel.position.y+150);
+  moneda2.position.set(wheel.position.x + wheel.width / 2, wheel.position.y+150);
+
+  // Add floating animation using gsap
+  function animateFloating(sprite: PIXI.Sprite) {
+    gsap.to(sprite, {
+      y: sprite.position.y - 20,
+      duration: 1.5,
+      yoyo: true,
+      repeat: -1,
+      ease: "sine.inOut",
+    });
+  }
+
+  animateFloating(moneda1);
+  animateFloating(moneda2);
+
+  app.stage.addChild(moneda1, moneda2);
 }
 
 function showPrizeOverlay(app: PIXI.Application, prize: string) {
