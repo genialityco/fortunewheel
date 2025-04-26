@@ -3,12 +3,12 @@
     "name": "ORO",
     "color": "#0000FF",
     "prizes": [
-      { "label": "TULAS",    "prob": 0.027778, "color": "#1B67D3" },
-      { "label": "ABANICO",     "prob": 0.111111, "color": "#0B3689" },
+      { "label": "VASO",    "prob": 0.027778, "color": "#1B67D3" },
+      { "label": "MUG",     "prob": 0.111111, "color": "#0B3689" },
       { "label": "TULAS",   "prob": 0.138889, "color": "#166AD0" },
       { "label": "ABANICO", "prob": 0.222222, "color": "#1953BD" },
-      { "label": "TULAS",    "prob": 0.027778, "color": "#1B67D3" },
-      { "label": "ABANICO",     "prob": 0.111111, "color": "#0B3689" },
+      { "label": "VASO",    "prob": 0.027778, "color": "#1B67D3" },
+      { "label": "MUG",     "prob": 0.111111, "color": "#0B3689" },
       { "label": "TULAS",   "prob": 0.138889, "color": "#166AD0" },
       { "label": "ABANICO", "prob": 0.222222, "color": "#1953BD" }
     ]
