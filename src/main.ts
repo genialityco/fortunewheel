@@ -69,7 +69,7 @@ async function boot() {
 
   // --- MENU BUTTONS ---
   const buttonImages = [
-    "/assets/BOTON_01.png",
+    //"/assets/BOTON_01.png",
     "/assets/BOTON_02.png",
     "/assets/BOTON_03.png",
   ];

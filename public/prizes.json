@@ -1,31 +1,18 @@
 [
-  {
-    "name": "ORO",
-    "color": "#0000FF",
-    "prizes": [
-      { "label": "VASO",    "prob": 0.15, "color": "#1B67D3" },
-      { "label": "MUG",     "prob": 0.15, "color": "#0B3689" },
-      { "label": "TULAS",   "prob": 0.15, "color": "#166AD0" },
-      { "label": "ABANICO", "prob": 0.15, "color": "#1953BD" },
-      { "label": "VASO",    "prob": 0.15, "color": "#1B67D3" },
-      { "label": "MUG",     "prob": 0.15, "color": "#0B3689" },
-      { "label": "TULAS",   "prob": 0.15, "color": "#166AD0" },
-      { "label": "ABANICO", "prob": 0.15, "color": "#1953BD" }
-    ]
-  },
+
   {
     "name": "ELITE",
     "color": "#FF00FF",
     "prizes": [
-      { "label": "TERMO",      "prob": 0.1, "color": "#FFD700" },
+      { "label": "SIGUE  \n\r GIRANDO",      "prob": 0.1, "color": "#FFD700" },
       { "label": "GORRA",      "prob": 0.1, "color": "#CCAA00" },
       { "label": "PAÑOLETA",   "prob": 0.1, "color": "#B28F00" },
-      { "label": "CUADERNOS",  "prob": 0.1, "color": "#997700" },
+      { "label": "OTRA  \n\r OPORTUNIDAD",  "prob": 0.1, "color": "#997700" },
       { "label": "BONO \n\r COMIDA", "prob": 0.1, "color": "#997700" },
-      { "label": "TERMO",      "prob": 0.1, "color": "#FFD700" },
+      { "label": "ABANICO",      "prob": 0.1, "color": "#FFD700" },
       { "label": "GORRA",      "prob": 0.1, "color": "#CCAA00" },
       { "label": "PAÑOLETA",   "prob": 0.1, "color": "#B28F00" },
-      { "label": "CUADERNOS",  "prob": 0.1, "color": "#997700" },
+      { "label": "SIGUE  \n\r GIRANDO",  "prob": 0.1, "color": "#997700" },
       { "label": "BONO \n\r COMIDA", "prob": 0.1, "color": "#997700" }
     ]
   },
@@ -33,13 +20,13 @@
     "name": "EXCLUSIVO",
     "color": "#00FF00",
     "prizes": [
-      { "label": "TERMO",           "prob": 0.15, "color": "#00FF66" },
-      { "label": "BONO \n\r COMIDA", "prob": 0.15, "color": "#339966" },
-      { "label": "CUADERNOS",       "prob": 0.15, "color": "#2A7A52" },
+      { "label": "GORRA",           "prob": 0.15, "color": "#00FF66" },
+      { "label": "BONO \n\r COMIDA",      "prob": 0.15, "color": "#339966" },
+      { "label": "¡CASI! GIRA \n\r OTRA VEZ",       "prob": 0.15, "color": "#2A7A52" },
       { "label": "PAÑOLETA",        "prob": 0.15, "color": "#1E4D33" },
-      { "label": "TERMO",           "prob": 0.15, "color": "#00FF66" },
-      { "label": "BONO \n\r COMIDA", "prob": 0.15, "color": "#339966" },
-      { "label": "CUADERNOS",       "prob": 0.15, "color": "#2A7A52" },
+      { "label": "ABANICO",           "prob": 0.15, "color": "#00FF66" },
+      { "label": "BONO \n\r COMIDA",      "prob": 0.15, "color": "#339966" },
+      { "label": "¡CASI! GIRA \n\r OTRA VEZ",       "prob": 0.15, "color": "#2A7A52" },
       { "label": "PAÑOLETA",        "prob": 0.15, "color": "#1E4D33" }
     ]
   }
