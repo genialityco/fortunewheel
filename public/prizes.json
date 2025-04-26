@@ -4,7 +4,7 @@
     "name": "EXCLUSIVO",
     "color": "#00FF00",
     "prizes": [
-      { "label": "GORRA",           "prob": 0.15, "color": "#00FF66" },
+      { "label": "CUADERNO",           "prob": 0.15, "color": "#00FF66" },
       { "label": "VASO",      "prob": 0.15, "color": "#339966" },
       { "label": "MUG",       "prob": 0.15, "color": "#2A7A52" },
       { "label": "TERMO",        "prob": 0.15, "color": "#1E4D33" },
