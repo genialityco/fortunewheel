@@ -1,6 +1,6 @@
 [
   {
-    "name": "GRATIS",
+    "name": "ELITE",
     "color": "#0000FF",
     "prizes": [
       { "label": "VASO",    "prob": 0.027778, "color": "#1B67D3" },
@@ -14,21 +14,22 @@
     ]
   },
   {
-    "name": "DORADO",
+    "name": "ORO",
     "color": "#FF00FF",
     "prizes": [
-      { "label": "TERMO",      "prob": 0.027778, "color": "#FFD700" },
-      { "label": "GORRA",      "prob": 0.111111, "color": "#CCAA00" },
-      { "label": "PAÑOLETA",   "prob": 0.138889, "color": "#B28F00" },
-      { "label": "CUADERNOS",  "prob": 0.222222, "color": "#997700" },
-      { "label": "TERMO",      "prob": 0.027778, "color": "#FFD700" },
-      { "label": "GORRA",      "prob": 0.111111, "color": "#CCAA00" },
-      { "label": "PAÑOLETA",   "prob": 0.138889, "color": "#B28F00" },
-      { "label": "CUADERNOS",  "prob": 0.222222, "color": "#997700" }
+      { "label": "TERMO",      "prob": 0.03, "color": "#FFD700" },
+      { "label": "GORRA",      "prob": 0.10, "color": "#CCAA00" },
+      { "label": "PAÑOLETA",   "prob": 0.13, "color": "#B28F00" },
+      { "label": "CUADERNOS",  "prob": 0.21, "color": "#997700" },
+      { "label": "TERMO",      "prob": 0.03, "color": "#FFD700" },
+      { "label": "GORRA",      "prob": 0.10, "color": "#CCAA00" },
+      { "label": "PAÑOLETA",   "prob": 0.13, "color": "#B28F00" },
+      { "label": "CUADERNOS",  "prob": 0.21, "color": "#997700" },
+      { "label": "CASHLESS",   "prob": 0.05, "color": "#997705" }
     ]
-  },
+  },  
   {
-    "name": "JACKPOINT",
+    "name": "EXCLUSIVO",
     "color": "#00FF00",
     "prizes": [
       { "label": "CUADERNO",           "prob": 0.15, "color": "#00FF66" },
@@ -36,7 +37,7 @@
       { "label": "MUG",       "prob": 0.15, "color": "#2A7A52" },
       { "label": "TERMO",        "prob": 0.15, "color": "#1E4D33" },
       { "label": "TULA",           "prob": 0.15, "color": "#00FF66" },
-      { "label": "BONO \n\r COMIDA",      "prob": 0.15, "color": "#339966" },
+      { "label": "COCTELES",      "prob": 0.15, "color": "#339966" },
       { "label": "CUADERNO",       "prob": 0.15, "color": "#2A7A52" },
       { "label": "TERMO",        "prob": 0.15, "color": "#1E4D33" }
 

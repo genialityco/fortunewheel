@@ -60,6 +60,13 @@ async function boot() {
   ring.position.copyFrom(wheel.position);
   confetti.position.copyFrom(wheel.position);
 
+  const logoTexture = await PIXI.Assets.load("/assets/LOGO-LA-SOLAR.png");
+const logo = new PIXI.Sprite(logoTexture);
+logo.anchor.set(0.5);
+logo.scale.set(0.2); // Ajusta el tamaño según necesites
+logo.position.set(wheel.position.x, wheel.position.y - wheel.height / 1); // Encima de la ruleta
+app.stage.addChild(logo);
+
   // Add background first, then wheel/ring/confetti above
   app.stage.addChild(wheel, ring, confetti);
 
