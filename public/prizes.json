@@ -1,6 +1,6 @@
 [
   {
-    "name": "ORO",
+    "name": "GRATIS",
     "color": "#0000FF",
     "prizes": [
       { "label": "VASO",    "prob": 0.027778, "color": "#1B67D3" },
@@ -14,7 +14,7 @@
     ]
   },
   {
-    "name": "ELITE",
+    "name": "DORADO",
     "color": "#FF00FF",
     "prizes": [
       { "label": "TERMO",      "prob": 0.027778, "color": "#FFD700" },
@@ -28,7 +28,7 @@
     ]
   },
   {
-    "name": "EXCLUSIVO",
+    "name": "JACKPOINT",
     "color": "#00FF00",
     "prizes": [
       { "label": "TERMO",           "prob": 0.027778, "color": "#00FF66" },
