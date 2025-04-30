@@ -13,6 +13,7 @@ async function boot() {
   await app.init({ background: "#101020", resizeTo: window });
   document.body.appendChild(app.canvas);
 
+
   // --- Add FONDO_MALUMA.mp4 as PIXI video background ---
   const fondoTexture = await PIXI.Assets.load("/assets/FONDO.png");
   const fondo = new PIXI.Sprite(fondoTexture);
@@ -64,8 +65,8 @@ async function boot() {
 
   // --- MENU BUTTONS ---
   const buttonImages = [
-    "/assets/BOTON_01.png",
-    "/assets/BOTON_02.png",
+   // "/assets/BOTON_01.png",
+   // "/assets/BOTON_02.png",
     "/assets/BOTON_03.png",
   ];
   const menuContainer = new PIXI.Container();

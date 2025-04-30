@@ -1,6 +1,6 @@
 [
   {
-    "name": "GRATIS",
+    "name": "ORO",
     "color": "#0000FF",
     "prizes": [
       { "label": "VASO",    "prob": 0.027778, "color": "#1B67D3" },
@@ -14,7 +14,7 @@
     ]
   },
   {
-    "name": "DORADO",
+    "name": "ELITE",
     "color": "#FF00FF",
     "prizes": [
       { "label": "TERMO",      "prob": 0.027778, "color": "#FFD700" },
@@ -28,18 +28,17 @@
     ]
   },
   {
-    "name": "JACKPOINT",
+    "name": "EXCLUSIVO",
     "color": "#00FF00",
     "prizes": [
-      { "label": "CUADERNO",           "prob": 0.15, "color": "#00FF66" },
-      { "label": "VASO",      "prob": 0.15, "color": "#339966" },
-      { "label": "MUG",       "prob": 0.15, "color": "#2A7A52" },
-      { "label": "TERMO",        "prob": 0.15, "color": "#1E4D33" },
-      { "label": "TULA",           "prob": 0.15, "color": "#00FF66" },
-      { "label": "BONO \n\r COMIDA",      "prob": 0.15, "color": "#339966" },
-      { "label": "CUADERNO",       "prob": 0.15, "color": "#2A7A52" },
-      { "label": "TERMO",        "prob": 0.15, "color": "#1E4D33" }
-
+      { "label": "TERMO",           "prob": 0.027778, "color": "#00FF66" },
+      { "label": "BONO \n\r COMIDA", "prob": 0.111111, "color": "#339966" },
+      { "label": "CUADERNOS",       "prob": 0.138889, "color": "#2A7A52" },
+      { "label": "PAÑOLETA",        "prob": 0.222222, "color": "#1E4D33" },
+      { "label": "TERMO",           "prob": 0.027778, "color": "#00FF66" },
+      { "label": "BONO \n\r COMIDA", "prob": 0.111111, "color": "#339966" },
+      { "label": "CUADERNOS",       "prob": 0.138889, "color": "#2A7A52" },
+      { "label": "PAÑOLETA",        "prob": 0.222222, "color": "#1E4D33" }
     ]
   }
 ]
