@@ -13,7 +13,6 @@ async function boot() {
   await app.init({ background: "#101020", resizeTo: window });
   document.body.appendChild(app.canvas);
 
-
   // --- Add FONDO_MALUMA.mp4 as PIXI video background ---
   const fondoTexture = await PIXI.Assets.load("/assets/FONDO.png");
   const fondo = new PIXI.Sprite(fondoTexture);
@@ -22,13 +21,13 @@ async function boot() {
 
   fondo.anchor.set(0.5);
   fondo.position.set(window.innerWidth / 2, window.innerHeight / 2);
-  
+
   const scale = Math.max(
     window.innerWidth / fondoTexture.width,
     window.innerHeight / fondoTexture.height
   );
   fondo.scale.set(scale);
-  
+
   app.stage.addChild(fondo);
 
   // --- Add MONEDAS.png as another background layer ---
@@ -61,19 +60,19 @@ async function boot() {
   confetti.position.copyFrom(wheel.position);
 
   const logoTexture = await PIXI.Assets.load("/assets/LOGO-LA-SOLAR.png");
-const logo = new PIXI.Sprite(logoTexture);
-logo.anchor.set(0.5);
-logo.scale.set(0.2); // Ajusta el tamaño según necesites
-logo.position.set(wheel.position.x, wheel.position.y - wheel.height / 1); // Encima de la ruleta
-app.stage.addChild(logo);
+  const logo = new PIXI.Sprite(logoTexture);
+  logo.anchor.set(0.5);
+  logo.scale.set(0.2); // Ajusta el tamaño según necesites
+  logo.position.set(wheel.position.x, wheel.position.y - wheel.height / 1); // Encima de la ruleta
+  app.stage.addChild(logo);
 
   // Add background first, then wheel/ring/confetti above
   app.stage.addChild(wheel, ring, confetti);
 
   // --- MENU BUTTONS ---
   const buttonImages = [
-   "/assets/BOTON_01.png",
-   "/assets/BOTON_02.png",
+    "/assets/BOTON_01.png",
+    "/assets/BOTON_02.png",
     "/assets/BOTON_03.png",
   ];
   const menuContainer = new PIXI.Container();
@@ -248,12 +247,9 @@ app.stage.addChild(logo);
   btn2.anchor.set(0.5);
   btn2.scale.set(0.15);
   const offsetX = 220; // ajusta este valor a tu gusto
-btn2.position.set(
-  wheel.position.x + offsetX,
-  wheel.position.y
-);
+  btn2.position.set(wheel.position.x + offsetX, wheel.position.y);
   btn2.eventMode = "static";
-  
+
   btn2.on("pointerdown", () => {
     if (isSpinning) return;
     isSpinning = true;
