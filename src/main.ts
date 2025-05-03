@@ -23,22 +23,17 @@ app.stage.scale.set(1, 1 / stretchFactor);
 app.stage.pivot.set(app.screen.width / 2, app.screen.height / 2);
 app.stage.position.set(app.screen.width / 2, app.screen.height / 2);
   // --- Add FONDO_MALUMA.mp4 as PIXI video background ---
-  const videoElement = document.createElement("video");
-  videoElement.src = "/assets/FONDO_MALUMA.mp4";
-  videoElement.autoplay = true;
-  videoElement.loop = true;
-  videoElement.muted = true; // Ensure no audio plays
-  await videoElement.play();
-
-  const videoTexture = PIXI.Texture.from(videoElement);
-  const fondo = new PIXI.Sprite(videoTexture);
+  const fondoTexture = await PIXI.Assets.load("/assets/FONDO.png");
+  const fondo = new PIXI.Sprite(fondoTexture);
   fondo.anchor.set(0.5);
   fondo.position.set(window.innerWidth / 2, window.innerHeight / 2);
 
-  // Scale to cover the screen, preserving aspect ratio
+  fondo.anchor.set(0.5);
+  fondo.position.set(window.innerWidth / 2, window.innerHeight / 2);
+
   const scale = Math.max(
-    window.innerWidth / videoElement.videoWidth,
-    window.innerHeight / videoElement.videoHeight
+    window.innerWidth / fondoTexture.width,
+    window.innerHeight / fondoTexture.height
   );
   fondo.scale.set(scale);
 
@@ -73,13 +68,20 @@ app.stage.position.set(app.screen.width / 2, app.screen.height / 2);
   ring.position.copyFrom(wheel.position);
   confetti.position.copyFrom(wheel.position);
 
+  const logoTexture = await PIXI.Assets.load("/assets/LOGO-LA-SOLAR.png");
+  const logo = new PIXI.Sprite(logoTexture);
+  logo.anchor.set(0.5);
+  logo.scale.set(0.2); // Ajusta el tamaño según necesites
+  logo.position.set(wheel.position.x, wheel.position.y - wheel.height / 1); // Encima de la ruleta
+  app.stage.addChild(logo);
+
   // Add background first, then wheel/ring/confetti above
   app.stage.addChild(wheel, ring, confetti);
 
   // --- MENU BUTTONS ---
   const buttonImages = [
-   // "/assets/BOTON_01.png",
-   // "/assets/BOTON_02.png",
+    "/assets/BOTON_01.png",
+    "/assets/BOTON_02.png",
     "/assets/BOTON_03.png",
   ];
   const menuContainer = new PIXI.Container();
@@ -254,12 +256,9 @@ app.stage.position.set(app.screen.width / 2, app.screen.height / 2);
   btn2.anchor.set(0.5);
   btn2.scale.set(0.15);
   const offsetX = 220; // ajusta este valor a tu gusto
-btn2.position.set(
-  wheel.position.x + offsetX,
-  wheel.position.y
-);
+  btn2.position.set(wheel.position.x + offsetX, wheel.position.y);
   btn2.eventMode = "static";
-  
+
   btn2.on("pointerdown", () => {
     if (isSpinning) return;
     isSpinning = true;
