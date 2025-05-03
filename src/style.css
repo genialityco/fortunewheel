@@ -14,6 +14,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+canvas {
+  transform: scale(1.5); /* Scale by 150% */
+      transform-origin: center center; /* Stay centered */
+}
+
 a {
   font-family: 'Montserrat', inherit;
   font-weight: 700;

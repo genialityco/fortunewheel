@@ -18,6 +18,7 @@ const stretchFactor = 1.5; // Adjust as needed
 
 // Apply inverse scaling to fix vertical stretch
 app.stage.scale.set(1, 1 / stretchFactor);
+//app.stage.scale.set(stretchFactor, 1);
 
 // Center the stage using pivot and position
 app.stage.pivot.set(app.screen.width / 2, app.screen.height / 2);
@@ -95,7 +96,7 @@ app.stage.position.set(app.screen.width / 2, app.screen.height / 2);
   const btnWidth = btnTextures[0].width * buttonScale;
   const buttonSpacing = btnHeight - btnHeight / 3; // Only 6px gap between buttons
 
-  const menuX = 100;
+  const menuX = 300;
   const menuHeight = configs.length * buttonSpacing;
   const menuY = window.innerHeight / 2 - menuHeight / 2;
 
