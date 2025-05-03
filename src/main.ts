@@ -96,7 +96,7 @@ app.stage.position.set(app.screen.width / 2, app.screen.height / 2);
   const btnWidth = btnTextures[0].width * buttonScale;
   const buttonSpacing = btnHeight - btnHeight / 3; // Only 6px gap between buttons
 
-  const menuX = 300;
+  const menuX = 500;
   const menuHeight = configs.length * buttonSpacing;
   const menuY = window.innerHeight / 2 - menuHeight / 2;
 
