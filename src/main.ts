@@ -13,7 +13,15 @@ async function boot() {
   await app.init({ background: "#101020", resizeTo: window });
   document.body.appendChild(app.canvas);
 
+// Set your vertical stretch correction factor
+const stretchFactor = 1.5; // Adjust as needed
 
+// Apply inverse scaling to fix vertical stretch
+app.stage.scale.set(1, 1 / stretchFactor);
+
+// Center the stage using pivot and position
+app.stage.pivot.set(app.screen.width / 2, app.screen.height / 2);
+app.stage.position.set(app.screen.width / 2, app.screen.height / 2);
   // --- Add FONDO_MALUMA.mp4 as PIXI video background ---
   const videoElement = document.createElement("video");
   videoElement.src = "/assets/FONDO_MALUMA.mp4";
