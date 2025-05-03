@@ -257,7 +257,7 @@ app.stage.position.set(app.screen.width / 2, app.screen.height / 2);
   btn2.anchor.set(0.5);
   btn2.scale.set(0.15);
   const offsetX = 220; // ajusta este valor a tu gusto
-  btn2.position.set(wheel.position.x + offsetX, wheel.position.y);
+  //btn2.position.set(wheel.position.x + offsetX, wheel.position.y);
   btn2.eventMode = "static";
 
   btn2.on("pointerdown", () => {

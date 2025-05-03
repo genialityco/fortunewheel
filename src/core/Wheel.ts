@@ -36,7 +36,7 @@ class Wheel extends PIXI.Container {
   }
 
   private async build() {
-    const radius = 260;
+    const radius = 360;
     const sliceAngle = (Math.PI * 2) / this.prizes.length;
 
     this.prizes.forEach((p, i) => {
@@ -85,7 +85,7 @@ class Wheel extends PIXI.Container {
     this.prizes.forEach((p, i) => {
       const style = new PIXI.TextStyle({
         fontFamily: "Montserrat, sans-serif",
-        fontSize: 20,
+        fontSize: 28,
         fontWeight: "700", 
         fill: "#ffffff",
         stroke: "#000000", 
@@ -104,8 +104,8 @@ class Wheel extends PIXI.Container {
       txt.anchor.set(0.5, 0.5);
       const theta = (i + 0.5) * sliceAngle;
       txt.position.set(
-        Math.cos(theta - Math.PI / 2) * radius * 0.65,
-        Math.sin(theta - Math.PI / 2) * radius * 0.65
+        Math.cos(theta - Math.PI / 2) * radius * 0.50,
+        Math.sin(theta - Math.PI / 2) * radius * 0.50
       );
       txt.rotation = theta - Math.PI / 2; // Adjust rotation for radial orientation
       this.addChild(txt);
@@ -180,7 +180,7 @@ export class WheelStand extends PIXI.Container {
   }
 
   private async build(prizes: Prize[], ring: LEDRing, confetti: Confetti) {
-    const radius = 153;
+    const radius = 283;
 
     this.wheel = new Wheel(prizes, ring, confetti);
     this.addChild(this.wheel);
@@ -188,9 +188,9 @@ export class WheelStand extends PIXI.Container {
     const fondoTexture = await PIXI.Assets.load("/assets/fondo_ruleta.png");
     this.fondoSprite = new PIXI.Sprite(fondoTexture);
     this.fondoSprite.anchor.set(0.5);
-    this.fondoSprite.position.set(-2, -17);
-    this.fondoSprite.width = (radius + 198) * 2;
-    this.fondoSprite.height = (radius + 195) * 2;
+    this.fondoSprite.position.set(-2, -22);
+    this.fondoSprite.width = (radius + 190) * 2;
+    this.fondoSprite.height = (radius + 190) * 2;
     this.addChild(this.fondoSprite);
   }
 
