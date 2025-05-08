@@ -1,12 +1,12 @@
 [
   {
-    "name": "ELITE",
+    "name": "INNOVACIÓN",
     "color": "#0000FF",
     "prizes": [
-      { "label": "TERMO",    "prob": 0.027778, "color": "#1B67D3" },
-      { "label": "MUG",     "prob": 0.111111, "color": "#0B3689" },
-      { "label": "TULAS",   "prob": 0.138889, "color": "#166AD0" },
-      { "label": "ABANICO", "prob": 0.222222, "color": "#1953BD" },
+      { "label": "DISRUPCIÓN",    "prob": 0.027778, "color": "#1B67D3" },
+      { "label": "ITERACIÓN",     "prob": 0.111111, "color": "#0B3689" },
+      { "label": "PROTOTIPADO",   "prob": 0.138889, "color": "#166AD0" },
+      { "label": "COLABORACIÓN", "prob": 0.222222, "color": "#1953BD" },
       { "label": "TERMO",    "prob": 0.027778, "color": "#1B67D3" },
       { "label": "MUG",     "prob": 0.111111, "color": "#0B3689" },
       { "label": "TULAS",   "prob": 0.138889, "color": "#166AD0" },
@@ -14,33 +14,24 @@
     ]
   },
   {
-    "name": "ORO",
+    "name": "DIFICULTADES",
     "color": "#FF00FF",
     "prizes": [
-      { "label": "TERMO",      "prob": 0.03, "color": "#FFD700" },
-      { "label": "GORRA",      "prob": 0.10, "color": "#CCAA00" },
-      { "label": "PAÑOLETA",   "prob": 0.13, "color": "#B28F00" },
-      { "label": "CUADERNOS",  "prob": 0.21, "color": "#997700" },
-      { "label": "TERMO",      "prob": 0.03, "color": "#FFD700" },
-      { "label": "GORRA",      "prob": 0.10, "color": "#CCAA00" },
-      { "label": "PAÑOLETA",   "prob": 0.13, "color": "#B28F00" },
-      { "label": "CUADERNOS",  "prob": 0.21, "color": "#997700" },
-      { "label": "CASHLESS",   "prob": 0.05, "color": "#997705" }
+      { "label": "RESISTENCIA \n\r AL CAMBIO",      "prob": 0.03, "color": "#FFD700" },
+      { "label": "TOLERANCIA \n\r  AL ERROR ",      "prob": 0.10, "color": "#CCAA00" },
+      { "label": "FALTA DE \n\r PRUEBAS REALES ",   "prob": 0.13, "color": "#B28F00" },
+      { "label": "BARRERAS  \n\r INTERNAS",  "prob": 0.21, "color": "#997700" },
     ]
   },  
   {
-    "name": "EXCLUSIVO",
+    "name": "SITUACIONES",
     "color": "#00FF00",
     "prizes": [
-      { "label": "CUADERNO",           "prob": 0.15, "color": "#00FF66" },
-      { "label": "TULA",      "prob": 0.15, "color": "#339966" },
-      { "label": "MUG",       "prob": 0.15, "color": "#2A7A52" },
-      { "label": "TERMO",        "prob": 0.15, "color": "#1E4D33" },
-      { "label": "MUG",           "prob": 0.15, "color": "#00FF66" },
-      { "label": "CÓCTELES",      "prob": 0.15, "color": "#339966" },
-      { "label": "CUADERNO",       "prob": 0.15, "color": "#2A7A52" },
-      { "label": "TERMO",        "prob": 0.15, "color": "#1E4D33" }
-
+      { "label": "FRUSTRACIÓN",           "prob": 0.15, "color": "#00FF66" },
+      { "label": "FALTA DE PRESUPUESTO",      "prob": 0.15, "color": "#339966" },
+      { "label": "NO SALEN IDEAS",       "prob": 0.15, "color": "#2A7A52" },
+      { "label": "YA LO ITENTE",        "prob": 0.15, "color": "#1E4D33" },
+      { "label": "MOMENTO EUREKA",           "prob": 0.15, "color": "#00FF66" },
     ]
   }
 ]
