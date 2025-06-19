@@ -14,7 +14,7 @@ async function boot() {
   document.body.appendChild(app.canvas);
 
   // --- Add FONDO_MALUMA.mp4 as PIXI video background ---
-  const fondoTexture = await PIXI.Assets.load("/assets/FONDO.png");
+  const fondoTexture = await PIXI.Assets.load("/assets/FONDO_MALUMA.mp4");
   const fondo = new PIXI.Sprite(fondoTexture);
   fondo.anchor.set(0.5);
   fondo.position.set(window.innerWidth / 2, window.innerHeight / 2);
@@ -59,7 +59,7 @@ async function boot() {
   ring.position.copyFrom(wheel.position);
   confetti.position.copyFrom(wheel.position);
 
-  const logoTexture = await PIXI.Assets.load("/assets/LOGO-LA-SOLAR.png");
+  const logoTexture = await PIXI.Assets.load("/assets/FRASE_COPY.png");
   const logo = new PIXI.Sprite(logoTexture);
   logo.anchor.set(0.5);
   logo.scale.set(0.2); // Ajusta el tamaño según necesites
