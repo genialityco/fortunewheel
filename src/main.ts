@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { Marker } from "./core/Marker";
 import { BlurFilter } from "@pixi/filter-blur";
 import { GlowFilter } from "@pixi/filter-glow";
+import { Prize } from "./core/rng";
 
 async function boot() {
   const app = new PIXI.Application();
@@ -14,7 +15,7 @@ async function boot() {
   document.body.appendChild(app.canvas);
 
   // --- Add FONDO_MALUMA.mp4 as PIXI video background ---
-  const fondoTexture = await PIXI.Assets.load("/assets/FONDO_MALUMA.mp4");
+  const fondoTexture = await PIXI.Assets.load("/assets/FONDO.png");
   const fondo = new PIXI.Sprite(fondoTexture);
   fondo.anchor.set(0.5);
   fondo.position.set(window.innerWidth / 2, window.innerHeight / 2);
@@ -53,7 +54,9 @@ async function boot() {
 
   const ring = new LEDRing();
   const confetti = new Confetti();
-  let wheel = new WheelStand(configs[activeConfigIndex].prizes, ring, confetti);
+  const prizes = configs[activeConfigIndex].prizes as Prize[];
+
+  let wheel = new WheelStand(prizes, ring, confetti);
 
   wheel.position.set(window.innerWidth / 2, window.innerHeight / 2);
   ring.position.copyFrom(wheel.position);
@@ -71,7 +74,6 @@ async function boot() {
 
   // --- MENU BUTTONS ---
   const buttonImages = [
-    "/assets/BOTON_01.png",
     "/assets/BOTON_02.png",
     "/assets/BOTON_03.png",
   ];

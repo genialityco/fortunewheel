@@ -42,6 +42,7 @@ class Wheel extends PIXI.Container {
     this.prizes.forEach((p, i) => {
       const segment = new PIXI.Container();
 
+      // Aquí se usa el color de cada premio para crear el fondo del segmento
       const texture = this.createGradientTexture(p.color);
       const sprite = new PIXI.Sprite(texture);
       sprite.anchor.set(0.5);
@@ -89,7 +90,6 @@ class Wheel extends PIXI.Container {
         fontWeight: "700", 
         fill: "#ffffff",
         stroke: "#000000", 
-        strokeThickness: 0,
         dropShadow: true,
         dropShadowColor: "#000000",
         dropShadowBlur: 4,
@@ -188,7 +188,7 @@ export class WheelStand extends PIXI.Container {
     const fondoTexture = await PIXI.Assets.load("/assets/fondo_ruleta.png");
     this.fondoSprite = new PIXI.Sprite(fondoTexture);
     this.fondoSprite.anchor.set(0.5);
-    this.fondoSprite.position.set(5, -15);
+    this.fondoSprite.position.set(0, -20);
     this.fondoSprite.width = (radius + 200) * 2;
     this.fondoSprite.height = (radius + 200) * 2;
     this.addChild(this.fondoSprite);
