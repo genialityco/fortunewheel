@@ -3,11 +3,15 @@ import { GifSprite } from "pixi.js/gif";
 import { WheelStand } from "./core/Wheel";
 import { LEDRing } from "./core/LEDRing";
 import { Confetti } from "./core/Confetti";
+import "./core/touchDebugOverlay.ts";
+import './TouchDebugOverlay.css';
 import gsap from "gsap";
 import { Marker } from "./core/Marker";
 import { BlurFilter } from "@pixi/filter-blur";
 import { GlowFilter } from "@pixi/filter-glow";
 import { Prize } from "./core/rng";
+
+
 
 async function boot() {
   const app = new PIXI.Application();
