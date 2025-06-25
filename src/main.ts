@@ -6,7 +6,7 @@ import * as PIXI from "pixi.js";
 import { WheelStand } from "./core/Wheel";
 import { LEDRing } from "./core/LEDRing";
 import { Confetti } from "./core/Confetti";
-import "./core/touchDebugOverlay.ts";
+import "./core/touchDebugOverlay";
 import './TouchDebugOverlay.css';
 import gsap from "gsap";
 // import { Marker } from "./core/Marker";
