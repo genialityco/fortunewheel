@@ -19,10 +19,12 @@ touchPointManager.onTouchPoints((points) => {
     marker.className = `touch-point-marker ${pt.is_touching ? 'touching' : ''}`;
     marker.style.left = `${x}px`;
     marker.style.top = `${y}px`;
-    marker.innerHTML = `
-      <span class="label">${pt.name}<br />(${Math.round(x)}, ${Math.round(y)})</span>
-    `;
     overlay.appendChild(marker);
+
+    //     marker.innerHTML = `
+    //   <span class="label">${pt.name}<br />(${Math.round(x)}, ${Math.round(y)})</span>
+    // `;
+    // overlay.appendChild(marker);
 
     //if (!pt.is_touching || !touchPointManager.shouldDispatchClick(id)) continue;
     //if (!pt.is_touching || !touchPointManager.shouldDispatchClick(id)) continue;

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --port 5736",
     "build": "tsc --noEmit || vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prod":"serve -l 5736 dist"
   },
   "devDependencies": {
     "typescript": "~5.7.2",
