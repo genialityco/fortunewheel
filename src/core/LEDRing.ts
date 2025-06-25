@@ -37,13 +37,11 @@ export class LEDRing extends PIXI.Container {
     }
   }
 
-  setMode(mode: Mode, winnerIndex?: number) {
+  setMode(mode: Mode, _winnerIndex?: number) {
     this.mode = mode
-    this.winnerSlice = winnerIndex ?? 0
   }
 
-  private winnerSlice = 0
-  private update(delta: number) {
+  private update(_ticker: PIXI.Ticker) {
     const t = performance.now() * 0.002
     this.leds.forEach((led, i) => {
       switch (this.mode) {
