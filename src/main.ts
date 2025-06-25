@@ -3,13 +3,12 @@
 import * as PIXI from "pixi.js";
 import "./core/touchDebugOverlay";
 import './touchDebugOverlay.css';
-
-import crearRuleta from "./component/WheelScreen";
-import AdminScreen from "./component/AdminScreen";
-
-function clearBody() {
-  document.body.innerHTML = '';
-}
+import gsap from "gsap";
+// import { Marker } from "./core/Marker";
+// Use PIXI's built-in BlurFilter for compatibility
+const { BlurFilter } = PIXI;
+import { GlowFilter } from "@pixi/filter-glow";
+import { Prize } from "./core/rng";
 
 async function boot() {
   clearBody();
