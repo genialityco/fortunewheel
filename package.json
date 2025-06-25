@@ -17,7 +17,8 @@
     "@pixi/filter-blur": "^7.4.3",
     "@pixi/filter-glow": "^5.2.1",
     "@pixi/particle-emitter": "^5.0.8",
+    "@types/pixi.js": "^5.0.0",
     "gsap": "^3.12.7",
-    "pixi.js": "^8.9.1"
+    "pixi.js": "^8.10.2"
   }
 }
