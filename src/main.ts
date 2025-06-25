@@ -7,7 +7,7 @@ import { WheelStand } from "./core/Wheel";
 import { LEDRing } from "./core/LEDRing";
 import { Confetti } from "./core/Confetti";
 import "./core/touchDebugOverlay";
-import './TouchDebugOverlay.css';
+import './touchDebugOverlay.css';
 import gsap from "gsap";
 // import { Marker } from "./core/Marker";
 // Use PIXI's built-in BlurFilter for compatibility
