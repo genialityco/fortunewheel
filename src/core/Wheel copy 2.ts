@@ -1,4 +1,3 @@
-// src/core/Wheel.ts
 import * as PIXI from "pixi.js";
 import gsap from "gsap";
 import { PixiPlugin } from "gsap/PixiPlugin";
@@ -6,20 +5,22 @@ import { Prize, weightedRandom } from "./rng";
 import { LEDRing } from "./LEDRing";
 import { Confetti } from "./Confetti";
 
-// Registrar GSAP plugin para Pixi
 gsap.registerPlugin(PixiPlugin);
 PixiPlugin.registerPIXI(PIXI);
 
+// 🔊 Crear sonido de giro
 const spinSound = new Audio('/assets/sounds/spin.mp3');
 spinSound.volume = 0.7;
 
 const winSound = new Audio('/assets/sounds/winning.mp3');
 winSound.volume = 0.8;
 
+
 function hexToNumber(hex: string): number {
   return parseInt(hex.replace(/^#/, ""), 16);
 }
 
+// Wheel holds only the spinning parts (slices, labels)
 class Wheel extends PIXI.Container {
   private slices: PIXI.Graphics[] = [];
   private prizes: Prize[];
@@ -34,12 +35,14 @@ class Wheel extends PIXI.Container {
     this.build();
   }
 
-  private build() {
+  private async build() {
     const radius = 210;
     const sliceAngle = (Math.PI * 2) / this.prizes.length;
 
     this.prizes.forEach((p, i) => {
       const segment = new PIXI.Container();
+
+      // Aquí se usa el color de cada premio para crear el fondo del segmento
       const texture = this.createGradientTexture(p.color);
       const sprite = new PIXI.Sprite(texture);
       sprite.anchor.set(0.5);
@@ -48,11 +51,30 @@ class Wheel extends PIXI.Container {
       segment.addChild(sprite);
 
       const mask = new PIXI.Graphics();
+      const innerRadius = radius - 2;
+
+      mask.beginFill(0xffffff, 0.2);
+      mask.moveTo(0, 0);
+      mask.arc(0, 0, innerRadius, i * sliceAngle, (i + 1) * sliceAngle);
+      mask.lineTo(0, 0);
+      mask.endFill();
+
       mask.beginFill(0xffffff);
       mask.moveTo(0, 0);
       mask.arc(0, 0, radius, i * sliceAngle, (i + 1) * sliceAngle);
       mask.lineTo(0, 0);
       mask.endFill();
+
+      mask.lineStyle({
+        width: 4,
+        color: 0xffffff,
+        alpha: 1,
+        alignment: 0.5,
+        cap: "round",
+        join: "round",
+      });
+
+      mask.stroke({ width: 5, color: 0xffffff, alpha: 0.5 });
       sprite.mask = mask;
       segment.addChild(mask);
 
@@ -65,9 +87,9 @@ class Wheel extends PIXI.Container {
       const style = new PIXI.TextStyle({
         fontFamily: "Montserrat, sans-serif",
         fontSize: 20,
-        fontWeight: "700",
+        fontWeight: "700", 
         fill: "#ffffff",
-        stroke: "#000000",
+        stroke: "#000000", 
         dropShadow: true,
         dropShadowColor: "#000000",
         dropShadowBlur: 4,
@@ -77,20 +99,21 @@ class Wheel extends PIXI.Container {
         wordWrapWidth: radius * 1.2,
         lineHeight: 8
       });
-
+      
       const txt = new PIXI.Text(p.label, style);
-      txt.anchor.set(0.5);
+      txt.anchor.set(0.5, 0.5);
       const theta = (i + 0.5) * sliceAngle;
       txt.position.set(
         Math.cos(theta - Math.PI / 2) * radius * 0.65,
         Math.sin(theta - Math.PI / 2) * radius * 0.65
       );
-      txt.rotation = theta - Math.PI / 2;
+      txt.rotation = theta - Math.PI / 2; // Adjust rotation for radial orientation
       this.addChild(txt);
     });
   }
 
   spin(onComplete: (result: Prize) => void) {
+    // 🔊 Reproducir sonido al iniciar el giro
     spinSound.currentTime = 0;
     spinSound.play();
 
@@ -108,8 +131,10 @@ class Wheel extends PIXI.Container {
       onComplete: () => {
         spinSound.pause();
         spinSound.currentTime = 0;
+
         winSound.currentTime = 0;
         winSound.play();
+
         this.rotation = this.rotation % (Math.PI * 2);
         this.ring.setMode("winner", winnerIndex);
         this.confetti.burst();
@@ -130,40 +155,53 @@ class Wheel extends PIXI.Container {
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, size, size);
 
+    const imageData = ctx.getImageData(0, 0, size, size);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      const noise = Math.floor(Math.random() * 20) - 10;
+      data[i] += noise;
+      data[i + 1] += noise;
+      data[i + 2] += noise;
+    }
+    ctx.putImageData(imageData, 0, 0);
+
     return PIXI.Texture.from(canvas);
   }
 }
 
+// WheelStand holds fondoTexture and the spinning Wheel as a child
 export class WheelStand extends PIXI.Container {
   private fondoSprite?: PIXI.Sprite;
   private wheel: Wheel;
-  private ring: LEDRing;
-  private confetti: Confetti;
 
   constructor(prizes: Prize[], ring: LEDRing, confetti: Confetti) {
     super();
-    this.ring = ring;
-    this.confetti = confetti;
-    this.build(prizes);
+    this.build(prizes, ring, confetti);
   }
 
-  private async build(prizes: Prize[]) {
+  private async build(prizes: Prize[], ring: LEDRing, confetti: Confetti) {
     const radius = 150;
-    this.wheel = new Wheel(prizes, this.ring, this.confetti);
-    this.wheel.position.set(0, 0);
+
+    // Create the spinning wheel
+    this.wheel = new Wheel(prizes, ring, confetti);
+
+    // 🔵 SCALE THE WHEEL to make it an oval (e.g. 1.3x wider, normal height)
+    this.wheel.scale.set(1.6, 1); // ← Adjust X and Y scale here
     this.addChild(this.wheel);
 
     const fondoTexture = await PIXI.Assets.load("/assets/fondo_ruleta.png");
     this.fondoSprite = new PIXI.Sprite(fondoTexture);
     this.fondoSprite.anchor.set(0.5);
     this.fondoSprite.position.set(0, -20);
-    this.fondoSprite.width = (radius + 200) * 2;
+    this.fondoSprite.width = (radius + 200) * 3;
     this.fondoSprite.height = (radius + 200) * 2;
-    this.addChildAt(this.fondoSprite, 0);
+    this.addChild(this.fondoSprite);
   }
 
   spin(onComplete: (result: Prize) => void) {
-    this.wheel.spin(onComplete);
+    if (this.wheel) {
+      this.wheel.spin(onComplete);
+    }
   }
 
   override destroy(options?: boolean | PIXI.IDestroyOptions) {
@@ -172,3 +210,6 @@ export class WheelStand extends PIXI.Container {
     super.destroy(options);
   }
 }
+
+
+
