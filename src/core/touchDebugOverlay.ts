@@ -12,7 +12,7 @@ touchPointManager.onTouchPoints((points) => {
   for (const pt of points) {
     const x = window.innerWidth - (pt['2d_x_px'] / 640) * window.innerWidth;
     const y = (pt['2d_y_px'] / 480) * window.innerHeight;
-    const id = pt.id;
+    // const id = pt.id;
 
     // Draw marker
     const marker = document.createElement('div');
