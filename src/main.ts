@@ -165,7 +165,7 @@ async function boot() {
       const shine = new PIXI.Graphics();
       shine.beginFill(0xffffff, 0.5);
       shine.drawRect(-wheel.width / 2, -wheel.height / 2, wheel.width, wheel.height);
-      shine.blendMode = PIXI.BLEND_MODES.ADD;
+      // shine.blendMode = PIXI.BLEND_MODES.ADD;
       wheel.addChild(shine);
       gsap.to(shine, { alpha: 0, duration: 0.5, onComplete: () => { wheel.removeChild(shine); } });
 
