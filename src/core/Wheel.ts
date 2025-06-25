@@ -16,12 +16,12 @@ spinSound.volume = 0.7;
 const winSound = new Audio('/assets/sounds/winning.mp3');
 winSound.volume = 0.8;
 
-function hexToNumber(hex: string): number {
-  return parseInt(hex.replace(/^#/, ""), 16);
-}
+// function hexToNumber(hex: string): number {
+//   return parseInt(hex.replace(/^#/, ""), 16);
+// }
 
 class Wheel extends PIXI.Container {
-  private slices: PIXI.Graphics[] = [];
+  private slices: PIXI.Container[] = [];
   private prizes: Prize[];
   private ring: LEDRing;
   private confetti: Confetti;
@@ -69,9 +69,6 @@ class Wheel extends PIXI.Container {
         fill: "#ffffff",
         stroke: "#000000",
         dropShadow: true,
-        dropShadowColor: "#000000",
-        dropShadowBlur: 4,
-        dropShadowDistance: 2,
         align: "center",
         wordWrap: true,
         wordWrapWidth: radius * 1.2,
@@ -136,7 +133,7 @@ class Wheel extends PIXI.Container {
 
 export class WheelStand extends PIXI.Container {
   private fondoSprite?: PIXI.Sprite;
-  private wheel: Wheel;
+  private wheel!: Wheel;
   private ring: LEDRing;
   private confetti: Confetti;
 
@@ -166,7 +163,7 @@ export class WheelStand extends PIXI.Container {
     this.wheel.spin(onComplete);
   }
 
-  override destroy(options?: boolean | PIXI.IDestroyOptions) {
+  override destroy(options?: boolean | PIXI.DestroyOptions) {
     if (this.wheel) this.wheel.destroy();
     if (this.fondoSprite) this.fondoSprite.destroy();
     super.destroy(options);

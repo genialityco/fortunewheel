@@ -1,15 +1,17 @@
 // main.ts reorganizado con menú de botones reactivado
 
 import * as PIXI from "pixi.js";
-import { GifSprite } from "pixi.js/gif";
+// import { BLEND_MODES } from "pixi.js";
+// import { GifSprite } from "pixi.js/gif";
 import { WheelStand } from "./core/Wheel";
 import { LEDRing } from "./core/LEDRing";
 import { Confetti } from "./core/Confetti";
 import "./core/touchDebugOverlay.ts";
 import './TouchDebugOverlay.css';
 import gsap from "gsap";
-import { Marker } from "./core/Marker";
-import { BlurFilter } from "@pixi/filter-blur";
+// import { Marker } from "./core/Marker";
+// Use PIXI's built-in BlurFilter for compatibility
+const { BlurFilter } = PIXI;
 import { GlowFilter } from "@pixi/filter-glow";
 import { Prize } from "./core/rng";
 
@@ -119,7 +121,11 @@ async function boot() {
   const menuHeight = configs.length * buttonSpacing;
   const menuY = app.screen.height / 2 - menuHeight / 2;
   const shadow = new PIXI.Graphics();
-  shadow.filters = [new BlurFilter({ strength: 8 })];
+  shadow.beginFill(0x000000, 0.4);
+  shadow.drawRoundedRect(menuX - btnWidth / 2 - 10, menuY - btnHeight / 4 - 15, btnWidth + 20, menuHeight + 30, 40);
+  shadow.endFill();
+  shadow.filters = [new PIXI.BlurFilter(8)];
+  shadow.filters = [new BlurFilter(8)];
   const highlight = new PIXI.Graphics();
 
   const menuButtons: PIXI.Sprite[] = [];
@@ -146,7 +152,7 @@ async function boot() {
       activeConfigIndex = i;
 
       const glowFilter = new GlowFilter({ distance: 15, outerStrength: 2, innerStrength: 1, color: 0xffff00 });
-      wheel.filters = [glowFilter];
+      wheel.filters = [glowFilter as unknown as PIXI.Filter];
       gsap.to(glowFilter, {
         outerStrength: 5,
         innerStrength: 3,
@@ -159,10 +165,9 @@ async function boot() {
       const shine = new PIXI.Graphics();
       shine.beginFill(0xffffff, 0.5);
       shine.drawRect(-wheel.width / 2, -wheel.height / 2, wheel.width, wheel.height);
-      shine.endFill();
-      shine.blendMode = 1;
+      shine.blendMode = PIXI.BLEND_MODES.ADD;
       wheel.addChild(shine);
-      gsap.to(shine, { alpha: 0, duration: 0.5, onComplete: () => wheel.removeChild(shine) });
+      gsap.to(shine, { alpha: 0, duration: 0.5, onComplete: () => { wheel.removeChild(shine); } });
 
       wheelContainer.removeChild(wheel);
       wheel.destroy();
@@ -186,7 +191,6 @@ async function boot() {
       fill: "#fff",
       align: "center",
       dropShadow: true,
-      dropShadowDistance: 2,
     });
     const label = new PIXI.Text(configs[i].name.toUpperCase(), labelStyle);
     label.anchor.set(0.5);
@@ -225,9 +229,6 @@ function showPrizeOverlay(app: PIXI.Application, prize: string) {
     fill: "#ffff00",
     align: "center",
     dropShadow: true,
-    dropShadowColor: "#000",
-    dropShadowBlur: 5,
-    dropShadowDistance: 4,
   });
 
   const label = new PIXI.Text(`¡Ganaste ${prize}!`, textStyle);
