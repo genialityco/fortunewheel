@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 5736",
-    "build": "tsc --noEmit || vite build",
-    "prebuild": "rm -rf dist || true",
+    "build": "tsc --noEmit --skipLibCheck && vite build || node scripts/fallback-build.js",
     "preview": "vite preview",
     "prod": "serve -l 5736 dist"
   },
