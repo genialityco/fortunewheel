@@ -35,7 +35,7 @@ async function crearRuleta(app: PIXI.Application) {
     const monedas = new PIXI.Sprite(monedasTexture);
     monedas.anchor.set(0.5);
     monedas.position.set(app.screen.width / 2, app.screen.height / 2 + 70);
-    monedas.scale.set(0.8);
+    monedas.scale.set(1);
     // Agregar imagen de tarjeta grande detrás de las monedas
     const tarjetaTexture = await PIXI.Assets.load("/img/WHEEL/TARJETA_CREDITO_01.png");
     const tarjetaSprite = new PIXI.Sprite(tarjetaTexture);
@@ -91,8 +91,8 @@ async function crearRuleta(app: PIXI.Application) {
     let wheel = new WheelStand(configs[activeConfigIndex].prizes as Prize[], ring, confetti);
 
     // Diferencias específicas de este código:
-    wheel.scale.set(0.5);
-    ring.scale.set(0.5);
+    wheel.scale.set(0.6);
+    ring.scale.set(0.6);
     wheel.position.set(0, 250);
 
     ring.position.copyFrom(wheel.position);
@@ -106,7 +106,7 @@ async function crearRuleta(app: PIXI.Application) {
     const copySprite = new PIXI.Sprite(copyTexture);
     copySprite.anchor.set(0.5);
     // Centrada arriba de la ruleta
-    copySprite.position.set(app.screen.width / 2, app.screen.height / 2 - 400); // Ajusta la posición vertical si lo necesitas
+    copySprite.position.set(app.screen.width / 2 +600 , app.screen.height / 2 - 400); // Ajusta la posición vertical si lo necesitas
     copySprite.scale.set(0.5); // Ajusta el tamaño si es necesario
     app.stage.addChild(copySprite);
     app.stage.setChildIndex(copySprite, app.stage.children.length - 1); // Siempre al frente
@@ -123,7 +123,7 @@ async function crearRuleta(app: PIXI.Application) {
     btn.cursor = "pointer";
     wheelContainer.addChild(btn);
     wheelContainer.setChildIndex(btn, wheelContainer.children.length - 1); // Siempre al frente
-    wheelContainer.position.set(950, 100);
+    wheelContainer.position.set(950, 0);
     let isSpinning = false;
     btn.on("pointerdown", () => {
         if (isSpinning) return;
