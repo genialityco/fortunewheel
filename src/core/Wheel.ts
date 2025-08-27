@@ -150,13 +150,13 @@ export class WheelStand extends PIXI.Container {
     this.wheel.position.set(0, 0);
     this.addChild(this.wheel);
 
-    const fondoTexture = await PIXI.Assets.load("/assets/fondo_ruleta.png");
+    const fondoTexture = await PIXI.Assets.load("/img/WHEEL/RULETA-SILUETEADA.png");
     this.fondoSprite = new PIXI.Sprite(fondoTexture);
     this.fondoSprite.anchor.set(0.5);
     this.fondoSprite.position.set(0, -20);
     this.fondoSprite.width = (radius + 200) * 2;
     this.fondoSprite.height = (radius + 200) * 2;
-    this.addChildAt(this.fondoSprite, 0);
+  this.addChild(this.fondoSprite); // Ahora la silueta está sobre la ruleta
   }
 
   spin(onComplete: (result: Prize) => void) {
