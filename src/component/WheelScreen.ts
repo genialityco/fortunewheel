@@ -34,17 +34,14 @@ async function crearRuleta(app: PIXI.Application) {
     const monedasTexture = await PIXI.Assets.load("/img/WHEEL/MONEDAS.png");
     const monedas = new PIXI.Sprite(monedasTexture);
     monedas.anchor.set(0.5);
-    monedas.position.set(app.screen.width / 2, app.screen.height / 2 + 20);
-    monedas.scale.set(
-        Math.max(app.screen.width / monedasTexture.width, app.screen.height / monedasTexture.height) /
-        2.5
-    );
+    monedas.position.set(app.screen.width / 2, app.screen.height / 2 + 70);
+    monedas.scale.set(0.8);
     // Agregar imagen de tarjeta grande detrás de las monedas
     const tarjetaTexture = await PIXI.Assets.load("/img/WHEEL/TARJETA_CREDITO_01.png");
     const tarjetaSprite = new PIXI.Sprite(tarjetaTexture);
     tarjetaSprite.anchor.set(0.5);
-    tarjetaSprite.position.set(app.screen.width / 2 - 400, app.screen.height / 2 - 100); // Ajusta posición según lo que necesites
-    tarjetaSprite.scale.set(0.5); // Grande
+    tarjetaSprite.position.set(app.screen.width / 2 - 700, app.screen.height / 2 - 250); // Ajusta posición según lo que necesites
+    tarjetaSprite.scale.set(0.9); // Grande
     backgroundContainer.addChild(tarjetaSprite);
     // Animación: rotación y escalado cíclico
     gsap.to(tarjetaSprite, {
@@ -60,8 +57,8 @@ async function crearRuleta(app: PIXI.Application) {
     // Imagen pequeña a la derecha
     const tarjetaSpriteDer = new PIXI.Sprite(tarjetaTexture);
     tarjetaSpriteDer.anchor.set(0.1);
-    tarjetaSpriteDer.position.set(app.screen.width / 2 + 210, app.screen.height / 2 - 40); // Ajusta posición
-    tarjetaSpriteDer.scale.set(0.15); // Pequeña
+    tarjetaSpriteDer.position.set(app.screen.width / 2 + 400, app.screen.height / 2 - 100); // Ajusta posición
+    tarjetaSpriteDer.scale.set(0.3); // Pequeña
     backgroundContainer.addChild(tarjetaSpriteDer);
     // Animación: rotación y escalado cíclico
     gsap.to(tarjetaSpriteDer, {
@@ -94,9 +91,9 @@ async function crearRuleta(app: PIXI.Application) {
     let wheel = new WheelStand(configs[activeConfigIndex].prizes as Prize[], ring, confetti);
 
     // Diferencias específicas de este código:
-    wheel.scale.set(0.7);
-    ring.scale.set(0.7);
-    wheel.position.set(0, 110);
+    wheel.scale.set(0.5);
+    ring.scale.set(0.5);
+    wheel.position.set(0, 250);
 
     ring.position.copyFrom(wheel.position);
     confetti.position.copyFrom(wheel.position);
@@ -109,8 +106,8 @@ async function crearRuleta(app: PIXI.Application) {
     const copySprite = new PIXI.Sprite(copyTexture);
     copySprite.anchor.set(0.5);
     // Centrada arriba de la ruleta
-    copySprite.position.set(app.screen.width / 2, app.screen.height / 2 - 230); // Ajusta la posición vertical si lo necesitas
-    copySprite.scale.set(0.3); // Ajusta el tamaño si es necesario
+    copySprite.position.set(app.screen.width / 2, app.screen.height / 2 - 400); // Ajusta la posición vertical si lo necesitas
+    copySprite.scale.set(0.5); // Ajusta el tamaño si es necesario
     app.stage.addChild(copySprite);
     app.stage.setChildIndex(copySprite, app.stage.children.length - 1); // Siempre al frente
 
@@ -120,12 +117,13 @@ async function crearRuleta(app: PIXI.Application) {
     const buttonTexture = await PIXI.Assets.load("img/WHEEL/LOGO_CENTRO_RULETA.png");
     const btn = new PIXI.Sprite(buttonTexture);
     btn.anchor.set(0.5);
-    btn.scale.set(0.15, 0.15);
-    btn.position.set(0, 100);
+    btn.scale.set(0.1, 0.10);
+    btn.position.set(0, 250);
     btn.eventMode = "static";
     btn.cursor = "pointer";
     wheelContainer.addChild(btn);
     wheelContainer.setChildIndex(btn, wheelContainer.children.length - 1); // Siempre al frente
+    wheelContainer.position.set(950, 100);
     let isSpinning = false;
     btn.on("pointerdown", () => {
         if (isSpinning) return;
@@ -156,10 +154,10 @@ async function crearRuleta(app: PIXI.Application) {
     const moneda2 = new PIXI.Sprite(moneda2Texture);
     moneda1.anchor.set(0.5);
     moneda2.anchor.set(0.5);
-    moneda1.scale.set(0.2);
-    moneda2.scale.set(0.2);
-    moneda1.position.set(app.screen.width / 2 - 300, app.screen.height / 2 + 180);
-    moneda2.position.set(app.screen.width / 2 + 300, app.screen.height / 2 + 150);
+    moneda1.scale.set(0.6);
+    moneda2.scale.set(0.6);
+    moneda1.position.set(app.screen.width / 2 - 500, app.screen.height / 2 + 380);
+    moneda2.position.set(app.screen.width / 2 + 500, app.screen.height / 2 + 300);
     uiContainer.addChild(moneda1, moneda2);
 
     gsap.to(moneda1, {
@@ -307,33 +305,33 @@ function adjustContainerScaleAndPosition(container: PIXI.Container, app: PIXI.Ap
     const physicalHeight = 450;
     const displayHeight = app.renderer.height;
     const displayWidth = app.renderer.width;
-    const stretchY = physicalHeight / displayHeight;
-    const scale = displayHeight / physicalHeight;
-    container.scale.set(scale, stretchY * scale);
-    container.position.set(displayWidth / 2, displayHeight / 2);
+    const scale = Math.min(displayWidth / physicalHeight, displayHeight / physicalHeight);
+    container.scale.set(scale, scale); // Proporción igual en X y Y
+    container.position.set(displayWidth / 2, displayHeight / 2 -500);
 }
 
 function showPrizeOverlay(app: PIXI.Application, prize: string) {
     const overlay = new PIXI.Container();
     const bg = new PIXI.Graphics();
-    const boxWidth = 600;
-    const boxHeight = 300;
-
-    // Fondo blanco (según tu código 2)
-    bg.beginFill(0xffffff, 1);
-    bg.roundRect(0, 0, boxWidth, boxHeight, 20);
-    bg.endFill();
-
+    // Crear el texto primero para medirlo y adaptar el fondo
     const textStyle = new PIXI.TextStyle({
         fontFamily: "Luckiest Guy, sans-serif",
         fontSize: 57.6,
-        fill: "#000000", // Texto negro
-        align: "center",
-        dropShadow: true,
+        fill: "#fff", // Letra blanca
+        align: "center"
     });
-
     const label = new PIXI.Text(prize, textStyle);
     label.anchor.set(0.5);
+    const bounds = label.getLocalBounds();
+    const paddingX = 80;
+    const paddingY = 60;
+    const boxWidth = bounds.width + paddingX;
+    const boxHeight = bounds.height + paddingY;
+    bg.clear();
+    bg.beginFill(0x000000, 0.7); // Fondo negro semitransparente
+    bg.lineStyle(6, 0x2196F3, 0.9); // Borde azul
+    bg.roundRect(0, 0, boxWidth, boxHeight, 32);
+    bg.endFill();
     label.position.set(boxWidth / 2, boxHeight / 2);
 
     overlay.addChild(bg, label);
