@@ -1,15 +1,24 @@
+// crearPantallaInicio.ts — Responsive + control por gestos (Kinect vía Socket.IO)
+
 import * as PIXI from "pixi.js";
 import io from "socket.io-client";
-// ...existing code...
+
+// Lienzo virtual de referencia para layout responsive
+const BASE = { width: 1920, height: 1080 };
+
 // Interfaz para los datos de gesto recibidos del Kinect
 interface GestureData {
-    hand: 'izq' | 'der';
-    type: 'click' | 'hand_open' | 'hand_closed' | 'hand_lasso' | 'swipe_left' | 'swipe_right' | 'swipe_up' | 'swipe_down';
-    coordinates: {
-        x: number;
-        y: number;
-        z: number;
-    };
+    hand: "izq" | "der";
+    type:
+    | "click"
+    | "hand_open"
+    | "hand_closed"
+    | "hand_lasso"
+    | "swipe_left"
+    | "swipe_right"
+    | "swipe_up"
+    | "swipe_down";
+    coordinates: { x: number; y: number; z: number };
     timestamp: number;
 }
 
@@ -26,137 +35,199 @@ async function crearPantallaInicio(
     const startScreenContainer = new PIXI.Container();
     app.stage.addChild(startScreenContainer);
 
-    // Fondo personalizado
-    const fondoTexture = await PIXI.Assets.load("/img/INICIO/FONDO_INICIO.png");
+    // Escala global responsive
+    let uiScale = 1;
+
+    // ---------- Cargar assets ----------
+    const [fondoTexture, logoTexture, botonTexture, imagenTexture] =
+        await Promise.all([
+            PIXI.Assets.load("/img/INICIO/FONDO_INICIO.png"),
+            PIXI.Assets.load("/img/INICIO/COPY_SUPERIOR.png"),
+            PIXI.Assets.load("/img/INICIO/BOTON_INICIO.png"),
+            PIXI.Assets.load("/img/INICIO/MOBILE-Y-TARJETA.png"),
+        ]);
+
+    // ---------- Fondo (cover) ----------
     const fondo = new PIXI.Sprite(fondoTexture);
     fondo.anchor.set(0.5);
-    fondo.position.set(app.screen.width / 2, app.screen.height / 2);
-    fondo.scale.set(Math.max(
-        (app.screen.width / fondoTexture.width),
-        (app.screen.height / fondoTexture.height),
-        1
-    ));
     startScreenContainer.addChild(fondo);
 
-    // Logo personalizado
-    const logoTexture = await PIXI.Assets.load("/img/INICIO/COPY_SUPERIOR.png");
+    // ---------- Logo ----------
     const logo = new PIXI.Sprite(logoTexture);
     logo.anchor.set(0.5);
-    logo.scale.set(0.6);
-    logo.position.set(app.screen.width / 2, app.screen.height / 2 - 350);
     startScreenContainer.addChild(logo);
 
-    // Botón personalizado
-    const botonTexture = await PIXI.Assets.load("/img/INICIO/BOTON_INICIO.png");
+    // ---------- Botón ----------
     const boton = new PIXI.Sprite(botonTexture);
     boton.anchor.set(0.5);
-    boton.scale.set(0.6, 0.6);
-    boton.position.set(app.screen.width / 2, app.screen.height / 2 - 100);
     boton.eventMode = "static";
     boton.cursor = "pointer";
+    startScreenContainer.addChild(boton);
 
-    // Imagen personalizada
-    const imagenTexture = await PIXI.Assets.load("/img/INICIO/MOBILE-Y-TARJETA.png");
+    // ---------- Imagen decorativa ----------
     const imagen = new PIXI.Sprite(imagenTexture);
     imagen.anchor.set(0.5);
-    imagen.scale.set(0.6);
-    imagen.position.set(app.screen.width / 2, app.screen.height / 2 + 300);
     startScreenContainer.addChild(imagen);
 
-    // Animación de flotación vertical
-    try {
-        const { default: gsap } = await import('gsap');
-        gsap.to(imagen, {
-            y: imagen.position.y - 30,
+    // ---------- Animación de flotación (reiniciable en resize) ----------
+    let gsapMod: typeof import("gsap") | null = null;
+    let floatTween: any = null; // gsap.core.Tween | null
+
+    async function ensureGsap() {
+        if (!gsapMod) {
+            try {
+                const mod = await import("gsap");
+                gsapMod = mod;
+            } catch (err) {
+                console.warn("GSAP no disponible, continuando sin animación:", err);
+            }
+        }
+    }
+
+    function startFloat() {
+        if (!gsapMod) return;
+        if (floatTween) {
+            try {
+                floatTween.kill();
+            } catch { }
+            floatTween = null;
+        }
+        // 30px relativos a la escala
+        floatTween = (gsapMod!.default).to(imagen, {
+            y: imagen.position.y - 30 * uiScale,
             duration: 1.5,
             yoyo: true,
             repeat: -1,
-            ease: "sine.inOut"
+            ease: "sine.inOut",
         });
-    } catch (error) {
-        console.warn("GSAP no disponible, continuando sin animación:", error);
     }
 
-    startScreenContainer.addChild(boton);
+    await ensureGsap();
 
-    // Variable para controlar si ya se ejecutó el clic (evitar múltiples ejecuciones)
+    // ---------- Responsive layout ----------
+    function layout() {
+        const vw = app.screen.width;
+        const vh = app.screen.height;
+
+        // Escala global para encajar BASE en la ventana real
+        uiScale = Math.min(vw / BASE.width, vh / BASE.height);
+
+        // Centro real
+        const cx = vw / 2;
+        const cy = vh / 2;
+
+        // Fondo: cubrir toda la pantalla manteniendo proporción
+        fondo.position.set(cx, cy);
+        {
+            const fw = fondoTexture.width;
+            const fh = fondoTexture.height;
+            const cover = Math.max(vw / fw, vh / fh);
+            fondo.scale.set(cover);
+        }
+
+        // Logo: arriba-centro
+        logo.position.set(cx, cy - 350 * uiScale);
+        // Limitar escala para que no crezca demasiado ni quede muy pequeño
+        logo.scale.set(Math.min(1.0, Math.max(0.35, 0.6 * uiScale)));
+
+        // Botón: centro un poco arriba
+        boton.position.set(cx, cy - 100 * uiScale);
+        // Escala coherente con pantalla
+        const botonScale = Math.min(1.1, Math.max(0.4, 0.6 * uiScale));
+        boton.scale.set(botonScale);
+
+        // Imagen decorativa: centro inferior
+        imagen.position.set(cx, cy + 300 * uiScale);
+        imagen.scale.set(Math.min(1.25, Math.max(0.4, 0.6 * uiScale)));
+
+        // Reiniciar/ajustar flotación tras relocalizar
+        startFloat();
+    }
+
+    // Primer layout
+    layout();
+    // Ajustar en tiempo real
+    window.addEventListener("resize", layout);
+
+    // ---------- Lógica de inicio ----------
     let clickExecuted = false;
-
-    // Función para manejar el clic del botón
     const handleClick = (): void => {
-        if (clickExecuted) return; // Evita múltiples ejecuciones
+        if (clickExecuted) return;
         clickExecuted = true;
 
-        console.log("Iniciando juego...");
         app.stage.removeChild(startScreenContainer);
         onStart();
 
-        // Cerrar la conexión Socket.IO al iniciar
         if (socket && socket.connected) {
             socket.disconnect();
         }
+
+        window.removeEventListener("resize", layout);
+        if (floatTween) {
+            try {
+                floatTween.kill();
+            } catch { }
+            floatTween = null;
+        }
     };
 
-    // Evento de clic manual
     boton.on("pointerdown", handleClick);
 
-    // Configuración de Socket.IO para conectar con el servidor Kinect
+    // ---------- Integración Socket.IO (gestos) ----------
     let socket: ReturnType<typeof io> | null = null;
 
     try {
-        // Conectar al servidor Kinect (por defecto en localhost:8000)
-        const serverUrl = wsUrl || 'http://localhost:8000';
+        const serverUrl = wsUrl || "http://localhost:8000";
         socket = io(serverUrl, {
-            transports: ['websocket', 'polling'],
+            transports: ["websocket", "polling"],
             timeout: 5000,
-            forceNew: true
+            forceNew: true,
         });
 
-        socket.on('connect', (): void => {
+        socket.on("connect", (): void => {
             console.log("Conectado al servidor Kinect:", socket?.id);
         });
 
-        socket.on('gesture', (gestureData: GestureData): void => {
-            console.log("Gesto recibido:", gestureData);
-
-            // Verificar si es un gesto de "click" (push hacia adelante)
-            if (gestureData.type === 'click') {
-                console.log(`Click detectado con mano ${gestureData.hand}. Iniciando juego...`);
-                handleClick(); // Simula el clic en el botón
+        socket.on("gesture", (gestureData: GestureData): void => {
+            // Sólo actuamos ante "click" (empuje hacia adelante)
+            if (gestureData.type === "click") {
+                handleClick();
             }
-
-            // También puedes responder a otros gestos si lo necesitas:
-            // - 'hand_open': mano abierta
-            // - 'hand_closed': mano cerrada  
-            // - 'hand_lasso': mano en forma de laso
-            // - 'swipe_left', 'swipe_right': deslizar horizontal
-            // - 'swipe_up', 'swipe_down': deslizar vertical
+            // Otros gestos disponibles en gestureData.type si quieres extender comportamiento
         });
 
-        socket.on('connect_error', (error: Error): void => {
+        socket.on("connect_error", (error: Error): void => {
             console.error("Error de conexión Socket.IO:", error);
         });
 
-        socket.on('disconnect', (reason: string): void => {
+        socket.on("disconnect", (reason: string): void => {
             console.log("Desconectado del servidor Kinect:", reason);
         });
-
     } catch (error) {
         console.error("Error al configurar Socket.IO:", error);
-        console.log("Asegúrate de instalar: npm install socket.io-client");
-        console.log("Y sus tipos: npm install @types/socket.io-client");
+        console.log("Asegúrate de instalar: npm i socket.io-client");
+        console.log("Y sus tipos: npm i -D @types/socket.io-client");
     }
 
-    // Función para limpiar recursos
+    // ---------- Limpieza ----------
     return {
         destroy: (): void => {
-            if (socket && socket.connected) {
-                socket.disconnect();
-            }
-            if (startScreenContainer.parent) {
-                app.stage.removeChild(startScreenContainer);
-            }
-        }
+            try {
+                window.removeEventListener("resize", layout);
+                if (floatTween) {
+                    try {
+                        floatTween.kill();
+                    } catch { }
+                    floatTween = null;
+                }
+                if (socket && socket.connected) {
+                    socket.disconnect();
+                }
+                if (startScreenContainer.parent) {
+                    app.stage.removeChild(startScreenContainer);
+                }
+            } catch { }
+        },
     };
 }
 
