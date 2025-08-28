@@ -126,8 +126,8 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
     const copySprite = new PIXI.Sprite(copyTexture);
     copySprite.anchor.set(0.5);
     // Centrada arriba de la ruleta
-    copySprite.position.set(app.screen.width / 2 +600 , app.screen.height / 2 - 400); // Ajusta la posición vertical si lo necesitas
-    copySprite.scale.set(0.5); // Ajusta el tamaño si es necesario
+    copySprite.position.set(app.screen.width / 2 + 600, app.screen.height / 2 - 400);
+    copySprite.scale.set(0.5);
     app.stage.addChild(copySprite);
     app.stage.setChildIndex(copySprite, app.stage.children.length - 1); // Siempre al frente
 

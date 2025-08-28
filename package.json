@@ -7,13 +7,14 @@
     "dev": "vite --port 5736",
     "build": "tsc --noEmit --skipLibCheck && vite build || node scripts/fallback-build.js",
     "preview": "vite preview",
-    "prod": "serve -l 5736 dist"
+    "prod": "serve -l 5736 dist",
+    "server": "node backend/server.js"
   },
   "devDependencies": {
     "@types/react": "^19.1.12",
     "@types/react-dom": "^19.1.8",
     "typescript": "~5.7.2",
-    "vite": "^6.3.1"
+    "vite": "^6.3.5"
   },
   "dependencies": {
     "@pixi/filter-blur": "^7.4.3",
@@ -22,8 +23,11 @@
     "@types/pixi.js": "^5.0.0",
     "firebase": "^12.1.0",
     "gsap": "^3.12.7",
+    "kinect2": "^0.3.0",
     "pixi.js": "^8.10.2",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   }
 }
