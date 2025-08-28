@@ -6,3 +6,8 @@
 [build.environment]
   NODE_VERSION = "20"  # Usa la misma versión que localmente
   CI = "false"         # Desactiva el modo CI estricto
+
+  [[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
