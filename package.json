@@ -24,7 +24,6 @@
     "@types/socket.io-client": "^1.4.36",
     "firebase": "^12.1.0",
     "gsap": "^3.12.7",
-    "kinect2": "^0.3.0",
     "pixi.js": "^8.10.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

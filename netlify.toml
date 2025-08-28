@@ -4,5 +4,5 @@
   ignore = "tsc"
 
 [build.environment]
-  NODE_VERSION = "18"  # Usa la misma versión que localmente
+  NODE_VERSION = "20"  # Usa la misma versión que localmente
   CI = "false"         # Desactiva el modo CI estricto
