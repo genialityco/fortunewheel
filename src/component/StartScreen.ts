@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Socket, io } from "socket.io-client";
-
+import io from "socket.io-client";
+// ...existing code...
 // Interfaz para los datos de gesto recibidos del Kinect
 interface GestureData {
     hand: 'izq' | 'der';
@@ -19,8 +19,8 @@ interface PantallaInicioInstance {
 }
 
 async function crearPantallaInicio(
-    app: PIXI.Application, 
-    onStart: () => void, 
+    app: PIXI.Application,
+    onStart: () => void,
     wsUrl?: string
 ): Promise<PantallaInicioInstance> {
     const startScreenContainer = new PIXI.Container();
@@ -76,7 +76,7 @@ async function crearPantallaInicio(
     } catch (error) {
         console.warn("GSAP no disponible, continuando sin animación:", error);
     }
-    
+
     startScreenContainer.addChild(boton);
 
     // Variable para controlar si ya se ejecutó el clic (evitar múltiples ejecuciones)
@@ -86,11 +86,11 @@ async function crearPantallaInicio(
     const handleClick = (): void => {
         if (clickExecuted) return; // Evita múltiples ejecuciones
         clickExecuted = true;
-        
+
         console.log("Iniciando juego...");
         app.stage.removeChild(startScreenContainer);
         onStart();
-        
+
         // Cerrar la conexión Socket.IO al iniciar
         if (socket && socket.connected) {
             socket.disconnect();
@@ -101,8 +101,8 @@ async function crearPantallaInicio(
     boton.on("pointerdown", handleClick);
 
     // Configuración de Socket.IO para conectar con el servidor Kinect
-    let socket: Socket | null = null;
-    
+    let socket: ReturnType<typeof io> | null = null;
+
     try {
         // Conectar al servidor Kinect (por defecto en localhost:8000)
         const serverUrl = wsUrl || 'http://localhost:8000';
@@ -111,20 +111,20 @@ async function crearPantallaInicio(
             timeout: 5000,
             forceNew: true
         });
-        
+
         socket.on('connect', (): void => {
             console.log("Conectado al servidor Kinect:", socket?.id);
         });
-        
+
         socket.on('gesture', (gestureData: GestureData): void => {
             console.log("Gesto recibido:", gestureData);
-            
+
             // Verificar si es un gesto de "click" (push hacia adelante)
             if (gestureData.type === 'click') {
                 console.log(`Click detectado con mano ${gestureData.hand}. Iniciando juego...`);
                 handleClick(); // Simula el clic en el botón
             }
-            
+
             // También puedes responder a otros gestos si lo necesitas:
             // - 'hand_open': mano abierta
             // - 'hand_closed': mano cerrada  
@@ -132,15 +132,15 @@ async function crearPantallaInicio(
             // - 'swipe_left', 'swipe_right': deslizar horizontal
             // - 'swipe_up', 'swipe_down': deslizar vertical
         });
-        
+
         socket.on('connect_error', (error: Error): void => {
             console.error("Error de conexión Socket.IO:", error);
         });
-        
+
         socket.on('disconnect', (reason: string): void => {
             console.log("Desconectado del servidor Kinect:", reason);
         });
-        
+
     } catch (error) {
         console.error("Error al configurar Socket.IO:", error);
         console.log("Asegúrate de instalar: npm install socket.io-client");

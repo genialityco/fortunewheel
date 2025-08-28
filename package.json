@@ -21,6 +21,7 @@
     "@pixi/filter-glow": "^5.2.1",
     "@pixi/particle-emitter": "^5.0.8",
     "@types/pixi.js": "^5.0.0",
+    "@types/socket.io-client": "^1.4.36",
     "firebase": "^12.1.0",
     "gsap": "^3.12.7",
     "kinect2": "^0.3.0",

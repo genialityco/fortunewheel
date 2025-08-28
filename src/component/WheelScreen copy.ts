@@ -9,7 +9,7 @@ import { Confetti } from "../core/Confetti";
 import "../core/touchDebugOverlay";
 import "../touchDebugOverlay.css";
 import { Prize } from "../core/rng";
-
+import { getPrizes } from "../core/firebasePrizes";
 const { BlurFilter } = PIXI;
 
 // Interfaz para los datos de gesto recibidos del Kinect
@@ -51,7 +51,7 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
     monedas.anchor.set(0.5);
     monedas.position.set(app.screen.width / 2, app.screen.height / 2 + 70);
     monedas.scale.set(1);
-    
+
     // Agregar imagen de tarjeta grande detrás de las monedas
     const tarjetaTexture = await PIXI.Assets.load("/img/WHEEL/TARJETA_CREDITO_01.png");
     const tarjetaSprite = new PIXI.Sprite(tarjetaTexture);
@@ -59,7 +59,7 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
     tarjetaSprite.position.set(app.screen.width / 2 - 700, app.screen.height / 2 - 250);
     tarjetaSprite.scale.set(0.9);
     backgroundContainer.addChild(tarjetaSprite);
-    
+
     // Animación: rotación y escalado cíclico
     gsap.to(tarjetaSprite, {
         rotation: Math.PI / 16,
@@ -77,7 +77,7 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
     tarjetaSpriteDer.position.set(app.screen.width / 2 + 400, app.screen.height / 2 - 100);
     tarjetaSpriteDer.scale.set(0.3);
     backgroundContainer.addChild(tarjetaSpriteDer);
-    
+
     // Animación: rotación y escalado cíclico
     gsap.to(tarjetaSpriteDer, {
         rotation: -Math.PI / 16,
@@ -88,7 +88,7 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
         repeat: -1,
         ease: "sine.inOut"
     });
-    
+
     backgroundContainer.addChild(monedas);
     // Animación: rotación y escalado cíclico para las monedas centrales
     gsap.to(monedas, {
@@ -102,9 +102,9 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
     });
 
     // ---------- Configs, wheel, ring, confetti ----------
-    const configs = await (await fetch("/prizes.json")).json();
+    const prizes = await getPrizes();
     let activeConfigIndex = 0;
-
+    const configs = [{ prizes }]; // Para mantener la estructura esperada por el resto del código
     const ring = new LEDRing();
     const confetti = new Confetti();
     let wheel = new WheelStand(configs[activeConfigIndex].prizes as Prize[], ring, confetti);
@@ -120,7 +120,7 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
     wheelContainer.addChild(wheel);
     wheelContainer.addChild(ring);
     wheelContainer.addChild(confetti);
-    
+
     // Agregar imagen COPY_SUPERIOR fuera del contenedor de la ruleta, directamente en el stage
     const copyTexture = await PIXI.Assets.load("/img/WHEEL/COPY_SUPERIOR.png");
     const copySprite = new PIXI.Sprite(copyTexture);
@@ -142,7 +142,7 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
             console.log("Ruleta ya está girando, ignorando comando...");
             return;
         }
-        
+
         console.log("Ejecutando giro de ruleta...");
         isSpinning = true;
 
@@ -182,11 +182,11 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
 
     // ---------- Configuración de Socket.IO para Kinect ----------
     let socket: any = null;
-    
+
     try {
         // Import dinámico de socket.io-client
-        const { io } = await import('socket.io-client');
-        
+        const { default: io } = await import('socket.io-client');
+
         // Conectar al servidor Kinect (por defecto en localhost:8000)
         const serverUrl = wsUrl || 'http://localhost:8000';
         socket = io(serverUrl, {
@@ -194,20 +194,20 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
             timeout: 5000,
             forceNew: true
         });
-        
+
         socket.on('connect', (): void => {
             console.log("🎯 Ruleta conectada al servidor Kinect:", socket?.id);
         });
-        
+
         socket.on('gesture', (gestureData: GestureData): void => {
             console.log("🎮 Gesto recibido en ruleta:", gestureData);
-            
+
             // Verificar si es un gesto de "click" (push hacia adelante)
             if (gestureData.type === 'click') {
                 console.log(`🎰 Click detectado con mano ${gestureData.hand}. Girando ruleta...`);
                 executeSpinAction();
             }
-            
+
             // Puedes agregar más gestos para otras funciones:
             // if (gestureData.type === 'swipe_left') {
             //     // Cambiar configuración anterior
@@ -216,15 +216,15 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
             //     // Cambiar configuración siguiente
             // }
         });
-        
+
         socket.on('connect_error', (error: Error): void => {
             console.error("❌ Error de conexión Socket.IO en ruleta:", error);
         });
-        
+
         socket.on('disconnect', (reason: string): void => {
             console.log("🔌 Ruleta desconectada del servidor Kinect:", reason);
         });
-        
+
     } catch (error) {
         console.error("❌ Error al configurar Socket.IO para ruleta:", error);
         console.log("📦 Para usar Kinect, instala: npm install socket.io-client");
@@ -282,16 +282,16 @@ async function crearRuleta(app: PIXI.Application, wsUrl?: string): Promise<Rulet
     shadow.endFill();
     shadow.filters = [new BlurFilter(8)];
 
-    const highlight = new PIXI.Graphics();
-    const menuButtons: PIXI.Sprite[] = [];
+    //const highlight = new PIXI.Graphics();
+    //const menuButtons: PIXI.Sprite[] = [];
 
-    function drawHighlight(x: number, y: number) {
-        highlight.clear();
-        highlight.lineStyle(5, 0xffffff, 1);
-        highlight.beginFill(0, 0);
-        highlight.drawRoundedRect(x - btnWidth / 2, y - btnHeight / 4 - 5, btnWidth - 27, btnHeight / 2 + 10, 30);
-        highlight.endFill();
-    }
+    // function drawHighlight(x: number, y: number) {
+    //     highlight.clear();
+    //     highlight.lineStyle(5, 0xffffff, 1);
+    //     highlight.beginFill(0, 0);
+    //     highlight.drawRoundedRect(x - btnWidth / 2, y - btnHeight / 4 - 5, btnWidth - 27, btnHeight / 2 + 10, 30);
+    //     highlight.endFill();
+    // }
 
     // El menú está comentado en el código original, lo mantengo comentado
     // drawHighlight(menuButtons[activeConfigIndex].position.x, menuButtons[activeConfigIndex].position.y);
@@ -329,7 +329,7 @@ function adjustContainerScaleAndPosition(container: PIXI.Container, app: PIXI.Ap
 function showPrizeOverlay(app: PIXI.Application, prize: string) {
     const overlay = new PIXI.Container();
     const bg = new PIXI.Graphics();
-    
+
     // Crear el texto primero para medirlo y adaptar el fondo
     const textStyle = new PIXI.TextStyle({
         fontFamily: "Luckiest Guy, sans-serif",
@@ -344,7 +344,7 @@ function showPrizeOverlay(app: PIXI.Application, prize: string) {
     const paddingY = 60;
     const boxWidth = bounds.width + paddingX;
     const boxHeight = bounds.height + paddingY;
-    
+
     bg.clear();
     bg.beginFill(0x000000, 0.7);
     bg.lineStyle(6, 0x2196F3, 0.9);
