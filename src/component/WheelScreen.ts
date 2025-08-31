@@ -206,6 +206,11 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
         const vh = app.screen.height;
         const ar = vw / vh;
 
+        // breakpoints
+        const isDesktop = vw >= 1200 && ar >= 1.1;
+        const isTablet = !isDesktop && vw >= 700 && vh >= 700; // << mantiene tu vista actual
+        const isSmall = !isDesktop && !isTablet;              // móviles pequeños
+
         uiScale = Math.min(vw / BASE.width, vh / BASE.height);
 
         const cx = vw / 2;
@@ -217,59 +222,142 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
             const bw = background.texture.width;
             const bh = background.texture.height;
             const cover = Math.max(vw / bw, vh / bh);
-            background.scale.set(cover / 1);
+            background.scale.set(cover);
         }
 
-        // Monedas de fondo
-        coinsBack.position.set(cx + 200, cy -700  * uiScale);
-        coinsBack.scale.set(1.5 * uiScale);
+        if (isTablet) {
+            // ====== TABLET: se mantiene como está ======
+            coinsBack.position.set(cx + 200, cy - 700 * uiScale);
+            coinsBack.scale.set(1.5 * uiScale);
 
-        // Logo superior
-        topLogo.position.set(cx, Math.max(80 * uiScale, vh * 0.15));
-        const topLogoMax = ar < 0.65 ? 0.35 : 0.4;
-        topLogo.scale.set(Math.min(topLogoMax, Math.max(0.3, 0.8 * uiScale)));
+            topLogo.position.set(cx, Math.max(80 * uiScale, vh * 0.15));
+            const topLogoMax = ar < 0.65 ? 0.35 : 0.4;
+            topLogo.scale.set(Math.min(topLogoMax, Math.max(0.3, 0.8 * uiScale)));
 
+            const wheelY = cy + (ar < 0.7 ? 40 : 80) * uiScale;
+            wheelContainer.position.set(cx, wheelY);
 
-        // (QUITADO) banner sobre la ruleta → nada aquí
+            const dyn = Math.min(1.45, Math.max(0.6, uiScale * (ar < 1 ? 0.98 : 1.1)));
+            const wheelScale = 1.5 * dyn;
 
-        // Rueda centrada (subimos un poco porque ya no hay banner)
-        const wheelY = cy + (ar < 0.7 ? 40 : 80) * uiScale;
-        wheelContainer.position.set(cx, wheelY);
+            ring.scale.set(wheelScale);
+            ring.position.set(0, 0);
+            confetti.position.set(0, 0);
 
-        const dyn = Math.min(1.45, Math.max(0.6, uiScale * (ar < 1 ? 0.98 : 1.1)));
-        const wheelScale = 1.5 * dyn;
+            centerLogo.scale.set(Math.min(0.42, 0.1 * wheelScale));
+            centerLogo.position.set(0, 0);
 
-        ring.scale.set(wheelScale);
-        ring.position.set(0, 0);
-        confetti.position.set(0, 0);
+            if (wheel) {
+                wheel.scale.set(wheelScale);
+                wheel.position.set(0, 0);
+            }
 
-        centerLogo.scale.set(Math.min(0.42, 0.1 * wheelScale));
-        centerLogo.position.set(0, 0);
+            const coinOffsetX = Math.min(520 * uiScale, vw * 0.30);
+            coinLeft.scale.set(Math.min(0.95, 0.95 * uiScale + 0.1));
+            coinRight.scale.set(Math.min(0.95, 1 * uiScale + 0.1));
+            coinLeft.position.set(cx - coinOffsetX, wheelY + Math.min(360 * uiScale, vh * -0.2));
+            coinRight.position.set(cx + coinOffsetX, wheelY + Math.min(300 * uiScale, vh * 0.26));
 
-        if (wheel) {
-            wheel.scale.set(wheelScale);
-            wheel.position.set(0, 0);
+            footerSprite.position.set(cx, vh - Math.max(44, 350 * uiScale));
+            footerSprite.scale.set(0.8);
+
+        } else if (isDesktop) {
+            // ====== DESKTOP grande ======
+            // monedas de fondo más centradas y menos agresivas
+            coinsBack.position.set(cx + 300 * uiScale, cy - 180 * uiScale);
+            coinsBack.scale.set(Math.max(0.4, 1 * uiScale));
+
+            // logo superior más pequeño y alto
+            topLogo.position.set(cx, Math.max(60 * uiScale, vh * 0.09));
+            const topCap = 0.28; // límite pequeño en desktop
+            topLogo.scale.set(Math.min(topCap, Math.max(0.18, 0.35 * uiScale)));
+
+            // ruleta centrada (ligeramente arriba)
+            const wheelY = cy + 20 * uiScale;
+            wheelContainer.position.set(cx, wheelY);
+
+            const dyn = Math.min(1.6, Math.max(0.8, uiScale * 1.2));
+            const wheelScale = 0.8 * dyn; // un poco mayor en desktop
+
+            ring.scale.set(wheelScale);
+            ring.position.set(0, 0);
+            confetti.position.set(0, 0);
+
+            // logo centro visible (más grande que en tablet)
+            centerLogo.scale.set(Math.min(0.35, 0.22 * wheelScale));
+            centerLogo.position.set(0, 0);
+
+            if (wheel) {
+                wheel.scale.set(wheelScale);
+                wheel.position.set(0, 0);
+            }
+
+            // monedas laterales alineadas a la base de la ruleta, nunca negativas
+            const coinOffsetX = Math.min(520 * uiScale, vw * 0.28);
+            const baseY = wheelY + Math.min(360 * uiScale, vh * 0.30);
+            coinLeft.scale.set(Math.min(0.9, 0.7 * uiScale + 0.15));
+            coinRight.scale.set(Math.min(0.9, 0.7 * uiScale + 0.15));
+            coinLeft.position.set(cx - coinOffsetX, baseY-200);
+            coinRight.position.set(cx + coinOffsetX, baseY - 40 * uiScale);
+
+            // footer más bajo y escalado por ancho disponible
+            footerSprite.position.set(cx, vh - Math.max(56, 90 * uiScale));
+            const footerScale =
+                Math.min((vw * 0.6) / footerSprite.texture.width, 1.0) *
+                Math.max(0.6, uiScale * 0.9);
+            footerSprite.scale.set(footerScale);
+
+        } else {
+            // ====== MÓVIL PEQUEÑO ======
+            // monedas de fondo detrás de la rueda
+            coinsBack.position.set(cx, cy - 40 * uiScale);
+            coinsBack.scale.set(Math.max(0.9, 1.05 * uiScale));
+
+            // logo reducido y cercano al borde superior
+            topLogo.position.set(cx, Math.max(50 * uiScale, vh * 0.06));
+            topLogo.scale.set(Math.min(0.34, Math.max(0.22, 0.32 * uiScale)));
+
+            // ruleta más centrada y un pelín menor para que quepa todo
+            const wheelY = cy + 10 * uiScale;
+            wheelContainer.position.set(cx, wheelY);
+
+            const dyn = Math.min(1.35, Math.max(0.7, uiScale * 1.05));
+            const wheelScale = 1.35 * dyn;
+
+            ring.scale.set(wheelScale);
+            ring.position.set(0, 0);
+            confetti.position.set(0, 0);
+
+            centerLogo.scale.set(Math.min(0.32, 0.20 * wheelScale));
+            centerLogo.position.set(0, 0);
+
+            if (wheel) {
+                wheel.scale.set(wheelScale);
+                wheel.position.set(0, 0);
+            }
+
+            // monedas laterales chicas y dentro de pantalla
+            const coinOffsetX = Math.min(360 * uiScale, vw * 0.32);
+            coinLeft.scale.set(Math.min(0.75, 0.55 * uiScale + 0.08));
+            coinRight.scale.set(Math.min(0.75, 0.55 * uiScale + 0.08));
+            const baseY = wheelY + Math.min(260 * uiScale, vh * 0.24);
+            coinLeft.position.set(cx - coinOffsetX, baseY);
+            coinRight.position.set(cx + coinOffsetX, baseY - 24 * uiScale);
+
+            // footer más cercano al borde inferior y ajustado a ancho
+            footerSprite.position.set(cx, vh - Math.max(28, 44 * uiScale));
+            const footerScale =
+                Math.min((vw * 0.9) / footerSprite.texture.width, 1.0) *
+                Math.max(0.6, uiScale * 0.9);
+            footerSprite.scale.set(footerScale);
         }
 
-        // Hit para girar
-        const hitR = Math.max(140, 180 * uiScale);
+        // Área clicable para girar (común)
+        const hitR = Math.max(120, 180 * uiScale);
         spinHit.clear();
         spinHit.beginFill(0xffffff, 0.001);
         spinHit.drawCircle(0, 0, hitR);
         spinHit.endFill();
-
-        // Monedas decorativas
-        const coinOffsetX = Math.min(520 * uiScale, vw * 0.30);
-        coinLeft.scale.set(Math.min(0.95, 0.95 * uiScale + 0.1));
-        coinRight.scale.set(Math.min(0.95, 1 * uiScale + 0.1));
-        coinLeft.position.set(cx - coinOffsetX, wheelY + Math.min(360 * uiScale, vh * -0.2));
-        coinRight.position.set(cx + coinOffsetX, wheelY + Math.min(300 * uiScale, vh * 0.26));
-
-        // Footer imagen COPY.png (centrado abajo)
-        footerSprite.position.set(cx, vh - Math.max(44, 350 * uiScale));
-        // escala para que no sobrepase márgenes
-        const footerScale = 0.8 //Math.min(maxFooterW / fw, 1.0) * Math.max(0.5, uiScale);
-        footerSprite.scale.set(footerScale);
 
         // Overlay “no premios”
         if (noPrizesDiv) {
@@ -281,6 +369,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
             noPrizesDiv.style.borderRadius = `${16 * uiScale}px`;
         }
     }
+
 
     window.addEventListener("resize", layout);
     layout();
