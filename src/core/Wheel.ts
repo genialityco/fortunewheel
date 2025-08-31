@@ -149,7 +149,9 @@ export class WheelStand extends PIXI.Container {
     this.wheel.position.set(0, 0);
     this.addChild(this.wheel);
 
-    const fondoTexture = await PIXI.Assets.load("/img/WHEEL/RULETA-SILUETEADA.png");
+    //const fondoTexture = await PIXI.Assets.load("/img/WHEEL/RULETA-SILUETEADA.png");
+    const fondoTexture = await PIXI.Assets.load("/buk/RULETA-SILUETEADA.png");
+
     this.fondoSprite = new PIXI.Sprite(fondoTexture);
     this.fondoSprite.anchor.set(0.5);
     this.fondoSprite.position.set(0, -20);
