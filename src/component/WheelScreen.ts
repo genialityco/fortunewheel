@@ -238,7 +238,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
             wheelContainer.position.set(cx, wheelY);
 
             const dyn = Math.min(1.45, Math.max(0.6, uiScale * (ar < 1 ? 0.98 : 1.1)));
-            const wheelScale = 1.5 * dyn;
+            const wheelScale = 1.7 * dyn;
 
             ring.scale.set(wheelScale);
             ring.position.set(0, 0);
@@ -248,7 +248,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
             centerLogo.position.set(0, 0);
 
             if (wheel) {
-                wheel.scale.set(wheelScale * 1.3);
+                wheel.scale.set(wheelScale);
                 wheel.position.set(0, 0);
             }
 
