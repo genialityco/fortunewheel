@@ -227,7 +227,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
 
         if (isTablet) {
             // ====== TABLET: se mantiene como está ======
-            coinsBack.position.set(cx + 200, cy - 700 * uiScale);
+            coinsBack.position.set(cx + 250, cy - 700 * uiScale);
             coinsBack.scale.set(1.5 * uiScale);
 
             topLogo.position.set(cx, Math.max(80 * uiScale, vh * 0.15));
@@ -248,7 +248,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
             centerLogo.position.set(0, 0);
 
             if (wheel) {
-                wheel.scale.set(wheelScale);
+                wheel.scale.set(wheelScale * 1.3);
                 wheel.position.set(0, 0);
             }
 
@@ -341,11 +341,6 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
             coinLeft.scale.set(Math.min(0.75, 0.55 * uiScale + 0.08));
             coinRight.scale.set(Math.min(0.75, 0.55 * uiScale + 0.08));
             const baseY = wheelY + Math.min(260 * uiScale, vh * 0.24);
-            coinLeft.position.set(cx - coinOffsetX, baseY);
-            coinRight.position.set(cx + coinOffsetX, baseY - 24 * uiScale);
-
-            // footer más cercano al borde inferior y ajustado a ancho
-            footerSprite.position.set(cx, vh - Math.max(28, 44 * uiScale));
             const footerScale =
                 Math.min((vw * 0.9) / footerSprite.texture.width, 1.0) *
                 Math.max(0.6, uiScale * 0.9);

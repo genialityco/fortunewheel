@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 5736",
+    "dev": "vite --port 5736 --host",
     "build": "tsc --noEmit --skipLibCheck && vite build || node scripts/fallback-build.js",
-    "preview": "vite preview",
-    "prod": "serve -l 5736 dist",
+    "preview": "vite preview --host --port 5736",
+    "prod": "serve -l 0.0.0.0:5736 dist",
     "server": "node backend/server.js"
   },
   "devDependencies": {
