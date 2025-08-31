@@ -33,22 +33,49 @@ const AdminScreen = async () => {
     const inputColor = qs<HTMLInputElement>("#color", container);
     const inputProb = qs<HTMLInputElement>("#prob", container);
     const inputCantidad = qs<HTMLInputElement>("#cantidad", container);
+    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
 
     const rowTpl = qs<HTMLTemplateElement>("#prize-row-tpl", container);
     const emptyTpl = qs<HTMLTemplateElement>("#no-rows-tpl", container);
 
+    // Paginación
+    const pagerUL = qs<HTMLUListElement>("#pager", container);
+    const pageSizeSel = qs<HTMLSelectElement>("#page-size", container);
+    const pageInfo = qs<HTMLSpanElement>("#page-info", container);
+
+    // Estado
     let prizesCache: FirebasePrize[] = [];
     let unsubscribe: (() => void) | undefined;
 
-    function render(prizes: FirebasePrize[]) {
-        if (!prizes || prizes.length === 0) {
-            tbody.replaceChildren(document.importNode(emptyTpl.content, true));
+    // Tamaño por defecto en 5
+    pageSizeSel.value = "5";
+    let currentPage = 1;
+    let pageSize = Number(pageSizeSel.value) || 5;
+
+    function totalPages(): number {
+        return Math.max(1, Math.ceil(prizesCache.length / pageSize));
+    }
+
+    function renderTablePage(): void {
+        tbody.innerHTML = "";
+
+        if (prizesCache.length === 0) {
+            tbody.appendChild(document.importNode(emptyTpl.content, true));
+            pageInfo.textContent = "0–0 de 0";
+            pagerUL.innerHTML = "";
             return;
         }
 
+        const tp = totalPages();
+        if (currentPage > tp) currentPage = tp;
+
+        const start = (currentPage - 1) * pageSize;
+        const end = Math.min(start + pageSize, prizesCache.length);
+        const view = prizesCache.slice(start, end);
+
         const frag = document.createDocumentFragment();
 
-        for (const p of prizes) {
+        for (const p of view) {
             const fragment = document.importNode(rowTpl.content, true);
             const tr = fragment.firstElementChild as HTMLTableRowElement;
 
@@ -63,51 +90,154 @@ const AdminScreen = async () => {
 
             (tr.querySelector(".prob") as HTMLElement).textContent =
                 Number.isFinite(p.prob) ? p.prob.toFixed(2) : "-";
+
             (tr.querySelector(".cantidad") as HTMLElement).textContent = String(p.cantidad);
-            
-            (tr.querySelector(".edit-btn") as HTMLButtonElement).dataset.id = p.id;
+
+            const editBtn = tr.querySelector(".edit-btn") as HTMLButtonElement;
+            editBtn.dataset.id = p.id;
+
+            const decBtn = tr.querySelector(".decrement-btn") as HTMLButtonElement;
+            decBtn.dataset.id = p.id;
 
             frag.appendChild(tr);
         }
 
-        tbody.replaceChildren(frag);
+        tbody.appendChild(frag);
+        pageInfo.textContent = `${start + 1}–${end} de ${prizesCache.length}`;
     }
 
+    function renderPagination(): void {
+        const tp = totalPages();
+        pagerUL.innerHTML = "";
+
+        const makeLi = (label: string, page: number | null, disabled = false, active = false) => {
+            const liEl = document.createElement("li");
+            liEl.className = `page-item${disabled ? " disabled" : ""}${active ? " active" : ""}`;
+            const a = document.createElement("a");
+            a.className = "page-link";
+            a.href = "#";
+            a.textContent = label;
+            if (!disabled && page !== null && page !== undefined) {
+                a.dataset.page = String(page);
+            }
+            liEl.appendChild(a);
+            return liEl;
+        };
+
+        // Prev
+        pagerUL.appendChild(makeLi("«", currentPage - 1, currentPage === 1));
+
+        // Ventana de 5 páginas alrededor de la actual
+        const windowSize = 5;
+        let start = Math.max(1, currentPage - Math.floor(windowSize / 2));
+        let end = Math.min(tp, start + windowSize - 1);
+        start = Math.max(1, end - windowSize + 1);
+
+        if (start > 1) {
+            pagerUL.appendChild(makeLi("1", 1, false, currentPage === 1));
+            if (start > 2) {
+                const ell = document.createElement("li");
+                ell.className = "page-item disabled";
+                ell.innerHTML = `<span class="page-link">…</span>`;
+                pagerUL.appendChild(ell);
+            }
+        }
+
+        for (let p = start; p <= end; p++) {
+            pagerUL.appendChild(makeLi(String(p), p, false, p === currentPage));
+        }
+
+        if (end < tp) {
+            if (end < tp - 1) {
+                const ell2 = document.createElement("li");
+                ell2.className = "page-item disabled";
+                ell2.innerHTML = `<span class="page-link">…</span>`;
+                pagerUL.appendChild(ell2);
+            }
+            pagerUL.appendChild(makeLi(String(tp), tp, false, currentPage === tp));
+        }
+
+        // Next
+        pagerUL.appendChild(makeLi("»", currentPage + 1, currentPage === tp));
+    }
 
     // Suscripción en tiempo real
     unsubscribe = subscribePrizes((prizes: FirebasePrize[]) => {
-        prizesCache = prizes;
-        render(prizesCache);
+        prizesCache = prizes ?? [];
+
+        // Mantén la página actual si sigue siendo válida
+        const tp = totalPages();
+        if (currentPage > tp) currentPage = tp;
+
+        renderTablePage();
+        renderPagination();
+        // marcar "vivo"
         liveBadge.classList.add("text-bg-success");
     });
 
-    // Delegación de eventos: tabla (restar y editar)
-    tbody.addEventListener("click", async (e) => {
-        const target = e.target as HTMLElement;
-        const decBtn = target.closest<HTMLButtonElement>(".decrement-btn");
-        const editBtn = target.closest<HTMLButtonElement>(".edit-btn");
+    // Navegación por click (delegación)
+    pagerUL.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        const a = (ev.target as HTMLElement).closest("a.page-link") as HTMLAnchorElement | null;
+        if (!a) return;
+        const dp = Number(a.dataset.page);
+        if (Number.isNaN(dp)) return;
+        const tp = totalPages();
+        currentPage = Math.min(tp, Math.max(1, dp));
+        renderTablePage();
+        renderPagination();
+    });
 
-        if (decBtn) {
-            const id = decBtn.dataset.id!;
-            decBtn.disabled = true;
-            try {
-                await decrementPrize(id);
-                // No renderizamos manualmente: el snapshot repintará la UI
-            } finally {
-                decBtn.disabled = false;
-            }
+    // Cambio de tamaño de página
+    pageSizeSel.addEventListener("change", () => {
+        pageSize = Number(pageSizeSel.value) || 5;
+        currentPage = 1; // reinicia a la primera
+        renderTablePage();
+        renderPagination();
+    });
+
+    // Delegación sobre la tabla para Editar y Decrementar
+    tbody.addEventListener("click", async (ev) => {
+        const target = ev.target as HTMLElement;
+
+        // --- Editar ---
+        const editBtn = target.closest("button.edit-btn") as HTMLButtonElement | null;
+        if (editBtn && editBtn.dataset.id) {
+            const id = editBtn.dataset.id;
+            const prize = prizesCache.find((p) => p.id === id);
+            if (!prize) return;
+
+            // Popular formulario
+            inputId.value = prize.id;
+            inputLabel.value = prize.label;
+
+            // Intentar asignar el color si es un hex válido (type="color" lo exige)
+            const isHex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(prize.color);
+            inputColor.value = isHex ? prize.color : inputColor.value;
+
+            inputProb.value = String(prize.prob);
+            inputCantidad.value = String(prize.cantidad);
+
+            // Feedback visual en el botón
+            submitBtn.textContent = "Actualizar Premio";
+            submitBtn.classList.remove("btn-primary");
+            submitBtn.classList.add("btn-success");
+
+            // Llevar foco al formulario
+            inputLabel.focus({ preventScroll: false });
+            form.scrollIntoView({ behavior: "smooth", block: "start" });
             return;
         }
 
-        if (editBtn) {
-            const id = editBtn.dataset.id!;
-            const prize = prizesCache.find((p) => p.id === id);
-            if (prize) {
-                inputLabel.value = prize.label;
-                inputColor.value = prize.color;
-                inputProb.value = String(prize.prob);
-                inputCantidad.value = String(prize.cantidad);
-                inputId.value = prize.id;
+        // --- Decrementar ---
+        const decBtn = target.closest("button.decrement-btn") as HTMLButtonElement | null;
+        if (decBtn && decBtn.dataset.id) {
+            const id = decBtn.dataset.id;
+            try {
+                await decrementPrize(id);
+            } catch (err) {
+                console.error(err);
+                alert("No se pudo decrementar la cantidad.");
             }
             return;
         }
@@ -136,17 +266,27 @@ const AdminScreen = async () => {
             return;
         }
 
-        if (id) {
-            await updatePrize({ id, label, color, prob, cantidad });
-            alert("Premio actualizado");
-        } else {
-            await addPrize({ label, color, prob, cantidad });
-            alert("Premio creado");
+        try {
+            if (id) {
+                await updatePrize({ id, label, color, prob, cantidad });
+                alert("Premio actualizado");
+            } else {
+                await addPrize({ label, color, prob, cantidad });
+                alert("Premio creado");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Ocurrió un error guardando el premio.");
+            return;
         }
 
+        // reset a modo "crear"
         form.reset();
         inputColor.value = "#ff0000"; // default de color
         inputId.value = "";           // salimos de modo edición
+        submitBtn.textContent = "Guardar Premio";
+        submitBtn.classList.remove("btn-success");
+        submitBtn.classList.add("btn-primary");
     });
 
     // Exponer destroy() para limpieza desde main.ts

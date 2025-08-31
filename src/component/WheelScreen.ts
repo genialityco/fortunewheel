@@ -34,7 +34,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
         PIXI.Assets.load("/buk/MONEDA_BUK_FONDO.png"),
         PIXI.Assets.load("/buk/COPY.png"),
         PIXI.Assets.load("/buk/LOGO_BUK.png"),
-        PIXI.Assets.load("/buk/LOGO_BUK.png"),
+        PIXI.Assets.load("/buk/LOGO_CENTRO_RULETA.png"),
         PIXI.Assets.load("/buk/MONEDA_BUK_IZQUIERDA.png"),
         PIXI.Assets.load("/buk/MONEDA_BUK_DERECHA.png"),
     ]);
@@ -68,7 +68,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
     const coinRight = new PIXI.Sprite(coinRightTexture);
     coinLeft.anchor.set(0.5);
     coinRight.anchor.set(0.5);
-    uiContainer.addChild(coinLeft, coinRight);
+    uiContainer.addChild(coinRight);
 
     // Footer: ahora es la imagen COPY.png
     const footerSprite = new PIXI.Sprite(footerTexture);
@@ -93,7 +93,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
     spinHit.eventMode = "static";
     spinHit.cursor = "pointer";
 
-    wheelContainer.addChild(ring, confetti, centerLogo, spinHit);
+    wheelContainer.addChild(coinLeft, ring, confetti, centerLogo, spinHit);
 
     // ----------- Estado de premios -----------
     let isSpinning = false;
@@ -158,6 +158,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
         if (wheel?.parent) wheel.parent.removeChild(wheel);
         wheel = new WheelStand(newPrizes as Prize[], ring, confetti);
         wheelContainer.addChildAt(wheel, 0);
+        wheelContainer.addChildAt(coinLeft, 0);
         layout();
     }
 
@@ -208,8 +209,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
 
         // breakpoints
         const isDesktop = vw >= 1200 && ar >= 1.1;
-        const isTablet = !isDesktop && vw >= 700 && vh >= 700; // << mantiene tu vista actual
-        const isSmall = !isDesktop && !isTablet;              // móviles pequeños
+        const isTablet = !isDesktop && vw >= 700 && vh >= 700; // << mantiene tu vista actual            // móviles pequeños
 
         uiScale = Math.min(vw / BASE.width, vh / BASE.height);
 
@@ -227,24 +227,25 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
 
         if (isTablet) {
             // ====== TABLET: se mantiene como está ======
-            coinsBack.position.set(cx + 250, cy - 700 * uiScale);
+            coinsBack.position.set(cx + 300, cy - 900 * uiScale);
             coinsBack.scale.set(1.5 * uiScale);
-
-            topLogo.position.set(cx, Math.max(80 * uiScale, vh * 0.15));
+1
+            topLogo.position.set(cx, Math.max(80 * uiScale, vh * 0.12));
             const topLogoMax = ar < 0.65 ? 0.35 : 0.4;
-            topLogo.scale.set(Math.min(topLogoMax, Math.max(0.3, 0.8 * uiScale)));
+            //topLogo.scale.set(Math.min(topLogoMax, Math.max(0.3, 0.8 * uiScale)));
+            topLogo.scale.set(0.6);
 
             const wheelY = cy + (ar < 0.7 ? 40 : 80) * uiScale;
-            wheelContainer.position.set(cx, wheelY);
+            wheelContainer.position.set(cx, wheelY + 50);
 
             const dyn = Math.min(1.45, Math.max(0.6, uiScale * (ar < 1 ? 0.98 : 1.1)));
-            const wheelScale = 1.7 * dyn;
+            const wheelScale = 2.5 * dyn;
 
             ring.scale.set(wheelScale);
             ring.position.set(0, 0);
             confetti.position.set(0, 0);
 
-            centerLogo.scale.set(Math.min(0.42, 0.1 * wheelScale));
+            centerLogo.scale.set(Math.min(0.42, 0.2 * wheelScale));
             centerLogo.position.set(0, 0);
 
             if (wheel) {
@@ -254,18 +255,18 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
 
             const coinOffsetX = Math.min(520 * uiScale, vw * 0.30);
             coinLeft.scale.set(Math.min(0.95, 0.95 * uiScale + 0.1));
-            coinRight.scale.set(Math.min(0.95, 1 * uiScale + 0.1));
-            coinLeft.position.set(cx - coinOffsetX, wheelY + Math.min(360 * uiScale, vh * -0.2));
-            coinRight.position.set(cx + coinOffsetX, wheelY + Math.min(300 * uiScale, vh * 0.26));
+            coinRight.scale.set(Math.min(0.95, 0.7 * uiScale + 0.3));
+            coinLeft.position.set(cx - coinOffsetX * 3.3, wheelY + Math.min(360 * uiScale, vh * -0.8));
+            coinRight.position.set(cx + coinOffsetX + 20, wheelY + Math.min(900 * uiScale, vh));
 
-            footerSprite.position.set(cx, vh - Math.max(44, 350 * uiScale));
+            footerSprite.position.set(cx, vh - Math.max(50, 350 * uiScale));
             footerSprite.scale.set(0.8);
 
         } else if (isDesktop) {
             // ====== DESKTOP grande ======
             // monedas de fondo más centradas y menos agresivas
-            coinsBack.position.set(cx + 300 * uiScale, cy - 180 * uiScale);
-            coinsBack.scale.set(Math.max(0.4, 1 * uiScale));
+            coinsBack.position.set(cx + 300 * uiScale, cy - 350 * uiScale);
+            coinsBack.scale.set(Math.max(0.2, 0 * uiScale));
 
             // logo superior más pequeño y alto
             topLogo.position.set(cx, Math.max(60 * uiScale, vh * 0.09));
@@ -274,17 +275,17 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
 
             // ruleta centrada (ligeramente arriba)
             const wheelY = cy + 20 * uiScale;
-            wheelContainer.position.set(cx, wheelY);
+            wheelContainer.position.set(cx, wheelY+10);
 
             const dyn = Math.min(1.6, Math.max(0.8, uiScale * 1.2));
-            const wheelScale = 0.8 * dyn; // un poco mayor en desktop
+            const wheelScale = 1 * dyn; // un poco mayor en desktop
 
             ring.scale.set(wheelScale);
             ring.position.set(0, 0);
             confetti.position.set(0, 0);
 
             // logo centro visible (más grande que en tablet)
-            centerLogo.scale.set(Math.min(0.35, 0.22 * wheelScale));
+            centerLogo.scale.set(Math.min(0.35, 0.3 * wheelScale));
             centerLogo.position.set(0, 0);
 
             if (wheel) {
@@ -295,13 +296,13 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
             // monedas laterales alineadas a la base de la ruleta, nunca negativas
             const coinOffsetX = Math.min(520 * uiScale, vw * 0.28);
             const baseY = wheelY + Math.min(360 * uiScale, vh * 0.30);
-            coinLeft.scale.set(Math.min(0.9, 0.7 * uiScale + 0.15));
-            coinRight.scale.set(Math.min(0.9, 0.7 * uiScale + 0.15));
-            coinLeft.position.set(cx - coinOffsetX, baseY-200);
-            coinRight.position.set(cx + coinOffsetX, baseY - 40 * uiScale);
+            coinLeft.scale.set(Math.min(0.9, 0.3 * uiScale + 0.15));
+            coinRight.scale.set(Math.min(0.9, 0.3 * uiScale + 0.15));
+            coinLeft.position.set(cx - coinOffsetX * 2.4, baseY - 830);
+            coinRight.position.set(cx + coinOffsetX * 0.4, baseY - 40 * uiScale);
 
             // footer más bajo y escalado por ancho disponible
-            footerSprite.position.set(cx, vh - Math.max(56, 90 * uiScale));
+            footerSprite.position.set(cx, vh - 100);
             const footerScale =
                 Math.min((vw * 0.6) / footerSprite.texture.width, 1.0) *
                 Math.max(0.6, uiScale * 0.9);

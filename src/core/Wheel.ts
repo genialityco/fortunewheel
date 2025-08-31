@@ -66,7 +66,7 @@ class Wheel extends PIXI.Container {
         fontFamily: "Montserrat, sans-serif",
         fontSize: 20,
         fontWeight: "700",
-        fill: "#470a6bff",
+        fill: "#0a0c6bff",
         dropShadow: false,
         align: "center",
         wordWrap: true,
