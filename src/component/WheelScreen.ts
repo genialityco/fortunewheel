@@ -268,9 +268,6 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
         // Footer imagen COPY.png (centrado abajo)
         footerSprite.position.set(cx, vh - Math.max(44, 350 * uiScale));
         // escala para que no sobrepase márgenes
-        const maxFooterW = vw * 0.9;
-        const fw = footerSprite.texture.width;
-        const fh = footerSprite.texture.height;
         const footerScale = 0.8 //Math.min(maxFooterW / fw, 1.0) * Math.max(0.5, uiScale);
         footerSprite.scale.set(footerScale);
 
