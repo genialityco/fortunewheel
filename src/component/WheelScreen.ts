@@ -207,11 +207,6 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
     ease: "sine.inOut",
   });
 
-  function fitWidth(sprite: PIXI.Sprite, targetW: number) {
-    const scale = targetW / sprite.texture.width;
-    sprite.scale.set(scale);
-  }
-
   // ----------- Layout responsive -----------
   function layout() {
     const vw = app.screen.width;
