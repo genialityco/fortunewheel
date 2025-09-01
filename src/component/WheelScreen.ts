@@ -275,7 +275,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
 
             // ruleta centrada (ligeramente arriba)
             const wheelY = cy + 20 * uiScale;
-            wheelContainer.position.set(cx, wheelY+10);
+            wheelContainer.position.set(cx, wheelY+30);
 
             const dyn = Math.min(1.6, Math.max(0.8, uiScale * 1.2));
             const wheelScale = 1 * dyn; // un poco mayor en desktop
@@ -302,7 +302,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
             coinRight.position.set(cx + coinOffsetX * 0.4, baseY - 40 * uiScale);
 
             // footer más bajo y escalado por ancho disponible
-            footerSprite.position.set(cx, vh - 100);
+            footerSprite.position.set(cx, vh - 50);
             const footerScale =
                 Math.min((vw * 0.6) / footerSprite.texture.width, 1.0) *
                 Math.max(0.6, uiScale * 0.9);
