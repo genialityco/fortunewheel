@@ -35,7 +35,7 @@ class Wheel extends PIXI.Container {
   }
 
   private build() {
-    const radius = 210;
+    const radius = 270;
     const sliceAngle = (Math.PI * 2) / this.prizes.length;
 
     this.prizes.forEach((p, i) => {
@@ -155,8 +155,8 @@ export class WheelStand extends PIXI.Container {
     this.fondoSprite = new PIXI.Sprite(fondoTexture);
     this.fondoSprite.anchor.set(0.5);
     this.fondoSprite.position.set(0, -20);
-    this.fondoSprite.width = (radius + 200) * 2;
-    this.fondoSprite.height = (radius + 200) * 2;
+    this.fondoSprite.width = (radius + 300) * 2;
+    this.fondoSprite.height = (radius + 300) * 2;
   this.addChild(this.fondoSprite); // Ahora la silueta está sobre la ruleta
   }
 
