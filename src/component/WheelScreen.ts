@@ -231,7 +231,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
             coinsBack.scale.set(1.5 * uiScale);
 1
             topLogo.position.set(cx, Math.max(80 * uiScale, vh * 0.12));
-            const topLogoMax = ar < 0.65 ? 0.35 : 0.4;
+            //const topLogoMax = ar < 0.65 ? 0.35 : 0.4;
             //topLogo.scale.set(Math.min(topLogoMax, Math.max(0.3, 0.8 * uiScale)));
             topLogo.scale.set(0.6);
 
@@ -338,10 +338,10 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
             }
 
             // monedas laterales chicas y dentro de pantalla
-            const coinOffsetX = Math.min(360 * uiScale, vw * 0.32);
+            //const coinOffsetX = Math.min(360 * uiScale, vw * 0.32);
             coinLeft.scale.set(Math.min(0.75, 0.55 * uiScale + 0.08));
             coinRight.scale.set(Math.min(0.75, 0.55 * uiScale + 0.08));
-            const baseY = wheelY + Math.min(260 * uiScale, vh * 0.24);
+            //const baseY = wheelY + Math.min(260 * uiScale, vh * 0.24);
             const footerScale =
                 Math.min((vw * 0.9) / footerSprite.texture.width, 1.0) *
                 Math.max(0.6, uiScale * 0.9);
