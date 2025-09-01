@@ -11,10 +11,10 @@ gsap.registerPlugin(PixiPlugin);
 PixiPlugin.registerPIXI(PIXI);
 
 const spinSound = new Audio('/assets/sounds/spin.mp3');
-spinSound.volume = 0.7;
+spinSound.volume = 0.5;
 
 const winSound = new Audio('/assets/sounds/winning.mp3');
-winSound.volume = 0.8;
+winSound.volume = 0.5;
 
 // function hexToNumber(hex: string): number {
 //   return parseInt(hex.replace(/^#/, ""), 16);
@@ -64,7 +64,7 @@ class Wheel extends PIXI.Container {
     this.prizes.forEach((p, i) => {
       const style = new PIXI.TextStyle({
         fontFamily: "Montserrat, sans-serif",
-        fontSize: 20,
+        fontSize: 23,
         fontWeight: "700",
         fill: "#0a0c6bff",
         dropShadow: false,
@@ -74,7 +74,7 @@ class Wheel extends PIXI.Container {
         lineHeight: 8
       });
 
-      const txt = new PIXI.Text(p.label, style);
+      const txt = new PIXI.Text(p.label.toUpperCase(), style);
       txt.anchor.set(0.5);
       const theta = (i + 0.5) * sliceAngle;
       txt.position.set(

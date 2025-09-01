@@ -135,11 +135,13 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
           showPrizeOverlay(
             app,
             "¡Lo sentimos! Vuelve a intentar",
-            () => uiScale
+            () => uiScale,
+            "",
           );
         } else {
-          showPrizeOverlay(app, `¡Ganaste ${prize.label}!`, () => uiScale);
+          showPrizeOverlay(app, `¡Ganaste ${prize.label}!`, () => uiScale, "https://bulk-game.netlify.app/");
           if (prize.id) await decrementPrize(prize.id);
+
         }
       } finally {
         setTimeout(() => {
@@ -386,7 +388,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
     destroy: (): void => {
       try {
         unsubscribe?.();
-      } catch {}
+      } catch { }
       window.removeEventListener("resize", layout);
       app.stage.removeChild(backgroundContainer, wheelContainer, uiContainer);
       if (noPrizesDiv?.parentElement)
@@ -399,7 +401,8 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
 function showPrizeOverlay(
   app: PIXI.Application,
   prize: string,
-  getScale: () => number
+  getScale: () => number,
+  redirectUrl: string
 ) {
   const overlay = new PIXI.Container();
   const bg = new PIXI.Graphics();
@@ -450,13 +453,22 @@ function showPrizeOverlay(
   } catch {
     overlay.alpha = 1;
   }
+  const targetUrl = redirectUrl;
+  let redirected = false;
+  const closeAndMaybeRedirect = () => {
+    if (overlay.parent) app.stage.removeChild(overlay);
+    if (targetUrl && !redirected) {
+      redirected = true;
+      try {
+        window.location.assign(targetUrl);
+      } catch {
+        window.location.href = targetUrl;
+      }
+    }
+  };
 
-  overlay.on("pointerdown", () => {
-    if (overlay.parent) app.stage.removeChild(overlay);
-  });
-  setTimeout(() => {
-    if (overlay.parent) app.stage.removeChild(overlay);
-  }, 8000);
+  overlay.on("pointerdown", closeAndMaybeRedirect);
+  setTimeout(closeAndMaybeRedirect, 10000);
 }
 
 export default crearRuleta;
