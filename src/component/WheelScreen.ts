@@ -275,7 +275,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
         wheelY + Math.min(900 * uiScale, vh)
       );
 
-      footerSprite.position.set(cx, vh - Math.max(50, 350 * uiScale));
+      footerSprite.position.set(cx, vh - Math.max(50, 100 * uiScale));
       footerSprite.scale.set(0.7);
     } else if (isDesktop) {
       coinsBack.position.set(cx + 300 * uiScale, cy - 350 * uiScale);
