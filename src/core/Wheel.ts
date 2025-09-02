@@ -99,7 +99,7 @@ class Wheel extends PIXI.Container {
 
     gsap.to(this, {
       rotation: (extraSpins * 360 + targetRot) * (Math.PI / 180),
-      duration: 5,
+      duration: 1,
       ease: "power4.out",
       onComplete: () => {
         spinSound.pause();
