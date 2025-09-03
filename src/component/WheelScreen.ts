@@ -237,7 +237,7 @@ async function crearRuleta(app: PIXI.Application): Promise<RuletaInstance> {
       // ====== TABLET: se mantiene como está ======
       coinsBack.position.set(cx + 300, cy - 900 * uiScale);
       coinsBack.scale.set(2 * uiScale);
-      topLogo.position.set(cx, Math.max(80 * uiScale, vh * 0.08));
+      topLogo.position.set(cx, Math.max(80 * uiScale, vh * 0.12));
       //const topLogoMax = ar < 0.65 ? 0.35 : 0.4;
       //topLogo.scale.set(Math.min(topLogoMax, Math.max(0.3, 0.8 * uiScale)));
       topLogo.scale.set(0.6);
