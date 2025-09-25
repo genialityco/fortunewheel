@@ -8,7 +8,7 @@ export class LEDRing extends PIXI.Container {
   private ticker = PIXI.Ticker.shared
   private ledTexture: PIXI.Texture | null = null // Texture for the LEDs
 
-  constructor(radius = 280, count = 40) {
+  constructor(radius = 221, count = 40) {
     super()
 
     // Load LED texture asynchronously

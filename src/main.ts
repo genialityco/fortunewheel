@@ -1,6 +1,11 @@
-// main.ts reorganizado sin pantalla de inicio, carga ruleta directo
+// main.ts reorganizado con menú de botones reactivado
 
 import * as PIXI from "pixi.js";
+// import { BLEND_MODES } from "pixi.js";
+// import { GifSprite } from "pixi.js/gif";
+import { WheelStand } from "./core/Wheel";
+import { LEDRing } from "./core/LEDRing";
+import { Confetti } from "./core/Confetti";
 import "./core/touchDebugOverlay";
 import './touchDebugOverlay.css';
 import gsap from "gsap";
@@ -11,18 +16,6 @@ import { GlowFilter } from "@pixi/filter-glow";
 import { Prize } from "./core/rng";
 
 async function boot() {
-  clearBody();
-
-  // route puede venir del hash "#/admin" o del path "/admin"
-  const route =
-    (location.hash && location.hash.replace(/^#/, '')) || location.pathname;
-
-  if (route === '/admin') {
-    document.body.appendChild(await AdminScreen());
-    return;
-  }
-
-  // Render principal (ruleta directamente)
   const app = new PIXI.Application({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -34,10 +27,223 @@ async function boot() {
   await app.init({ resizeTo: window });
   document.body.appendChild(app.canvas);
 
-  // Cargar la ruleta directamente
-  await crearRuleta(app);
+  const backgroundContainer = new PIXI.Container();
+  const wheelContainer = new PIXI.Container();
+  const uiContainer = new PIXI.Container();
+  const menuContainer = new PIXI.Container();
+
+  app.stage.addChild(backgroundContainer, wheelContainer, uiContainer, menuContainer);
+
+  const fondoTexture = await PIXI.Assets.load("/assets/FONDO.png");
+  const fondo = new PIXI.Sprite(fondoTexture);
+  fondo.anchor.set(0.5);
+  fondo.position.set(app.screen.width / 2, app.screen.height / 2);
+  fondo.scale.set(Math.max(
+    app.screen.width / fondoTexture.width,
+    app.screen.height / fondoTexture.height
+  ));
+  backgroundContainer.addChild(fondo);
+
+  const monedasTexture = await PIXI.Assets.load("/assets/MONEDAS.png");
+  const monedas = new PIXI.Sprite(monedasTexture);
+  monedas.anchor.set(0.5);
+  monedas.position.set(app.screen.width / 2, app.screen.height / 2);
+  monedas.scale.set(
+    Math.max(app.screen.width / monedasTexture.width, app.screen.height / monedasTexture.height) / 1.5
+  );
+  backgroundContainer.addChild(monedas);
+
+  const configs = await (await fetch("/prizes.json")).json();
+  let activeConfigIndex = 0;
+  const ring = new LEDRing();
+  const confetti = new Confetti();
+  let wheel = new WheelStand(configs[activeConfigIndex].prizes as Prize[], ring, confetti);
+  wheel.position.set(0, 0);
+  ring.position.copyFrom(wheel.position);
+  confetti.position.copyFrom(wheel.position);
+  wheelContainer.addChild(wheel, ring, confetti);
+  adjustContainerScaleAndPosition(wheelContainer, app);
+
+  const buttonTexture = await PIXI.Assets.load("/assets/wheel_button.png");
+  const btn = new PIXI.Sprite(buttonTexture);
+  btn.anchor.set(0.5);
+  btn.scale.set(0.3, 0.15); // Ajuste de proporciones para que no se vea estirado
+  btn.position.set(app.screen.width / 2, app.screen.height / 2);
+  btn.eventMode = "static";
+
+  let isSpinning = false;
+  btn.on("pointerdown", () => {
+    if (isSpinning) return;
+    isSpinning = true;
+    wheel.spin((prize) => {
+      showPrizeOverlay(app, prize.label);
+      isSpinning = false;
+    });
+  });
+  uiContainer.addChild(btn);
+
+  const legalesTexture = await PIXI.Assets.load("/assets/LEGALES.png");
+  const legales = new PIXI.Sprite(legalesTexture);
+  legales.anchor.set(0.5, 1);
+  legales.scale.set((app.screen.width * 0.8) / legalesTexture.width);
+  legales.position.set(app.screen.width / 2, app.screen.height - 10);
+  uiContainer.addChild(legales);
+
+  const logoTexture = await PIXI.Assets.load("/assets/FRASE_COPY.png");
+  const logo = new PIXI.Sprite(logoTexture);
+  logo.anchor.set(0.5);
+  logo.scale.set(0.2);
+  logo.position.set(app.screen.width / 2, app.screen.height / 2 - 300);
+  //uiContainer.addChild(logo);
+
+  const moneda1Texture = await PIXI.Assets.load("/assets/MONEDA_01.png");
+  const moneda2Texture = await PIXI.Assets.load("/assets/MONEDA_02.png");
+  const moneda1 = new PIXI.Sprite(moneda1Texture);
+  const moneda2 = new PIXI.Sprite(moneda2Texture);
+  moneda1.anchor.set(0.5);
+  moneda2.anchor.set(0.5);
+  moneda1.scale.set(0.2);
+  moneda2.scale.set(0.2);
+  moneda1.position.set(app.screen.width / 2 - 300, app.screen.height / 2 + 180);
+  moneda2.position.set(app.screen.width / 2 + 300, app.screen.height / 2 + 150);
+  uiContainer.addChild(moneda1, moneda2);
+
+  gsap.to(moneda1, { y: moneda1.position.y - 20, duration: 1.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
+  gsap.to(moneda2, { y: moneda2.position.y - 20, duration: 1.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
+
+  const buttonImages = ["/assets/BOTON_02.png", "/assets/BOTON_03.png"];
+  const btnTextures = await Promise.all(buttonImages.map(img => PIXI.Assets.load(img)));
+  const buttonScale = 0.25;
+  const btnHeight = btnTextures[0].height * buttonScale;
+  const btnWidth = btnTextures[0].width * buttonScale;
+  const buttonSpacing = btnHeight - btnHeight / 3;
+  const menuX = 100;
+  const menuHeight = configs.length * buttonSpacing;
+  const menuY = app.screen.height / 2 - menuHeight / 2;
+  const shadow = new PIXI.Graphics();
+  shadow.beginFill(0x000000, 0.4);
+  shadow.drawRoundedRect(menuX - btnWidth / 2 - 10, menuY - btnHeight / 4 - 15, btnWidth + 20, menuHeight + 30, 40);
+  shadow.endFill();
+  shadow.filters = [new PIXI.BlurFilter(8)];
+  shadow.filters = [new BlurFilter(8)];
+  const highlight = new PIXI.Graphics();
+
+  const menuButtons: PIXI.Sprite[] = [];
+  function drawHighlight(x: number, y: number) {
+    highlight.clear();
+    highlight.lineStyle(5, 0xffffff, 1);
+    highlight.beginFill(0, 0);
+    highlight.drawRoundedRect(x - btnWidth / 2, y - btnHeight / 4 - 5, btnWidth - 27, btnHeight / 2 + 10, 30);
+    highlight.endFill();
+  }
+
+  for (let i = 0; i < configs.length; i++) {
+    const btnTexture = btnTextures[i % btnTextures.length];
+    const btn = new PIXI.Sprite(btnTexture);
+    btn.anchor.set(0.5);
+    btn.scale.set(buttonScale);
+    const btnY = menuY + i * buttonSpacing;
+    btn.position.set(menuX, btnY);
+    btn.eventMode = "static";
+    btn.cursor = "pointer";
+
+    btn.on("pointerdown", () => {
+      if (activeConfigIndex === i) return;
+      activeConfigIndex = i;
+
+      const glowFilter = new GlowFilter({ distance: 15, outerStrength: 2, innerStrength: 1, color: 0xffff00 });
+      wheel.filters = [glowFilter as unknown as PIXI.Filter];
+      gsap.to(glowFilter, {
+        outerStrength: 5,
+        innerStrength: 3,
+        duration: 0.5,
+        yoyo: true,
+        repeat: 1,
+        onComplete: () => (wheel.filters = null),
+      });
+
+      const shine = new PIXI.Graphics();
+      shine.beginFill(0xffffff, 0.5);
+      shine.drawRect(-wheel.width / 2, -wheel.height / 2, wheel.width, wheel.height);
+      // shine.blendMode = PIXI.BLEND_MODES.ADD;
+      wheel.addChild(shine);
+      gsap.to(shine, { alpha: 0, duration: 0.5, onComplete: () => { wheel.removeChild(shine); } });
+
+      wheelContainer.removeChild(wheel);
+      wheel.destroy();
+      wheel = new WheelStand(configs[activeConfigIndex].prizes, ring, confetti);
+      wheel.position.set(0, 0);
+      wheelContainer.addChildAt(wheel, 0);
+      ring.position.copyFrom(wheel.position);
+      confetti.position.copyFrom(wheel.position);
+      adjustContainerScaleAndPosition(wheelContainer, app);
+
+      const activeBtn = menuButtons[activeConfigIndex];
+      drawHighlight(activeBtn.position.x, activeBtn.position.y);
+      menuContainer.setChildIndex(shadow, 0);
+      menuContainer.setChildIndex(highlight, 1);
+    });
+
+    const labelStyle = new PIXI.TextStyle({
+      fontFamily: "Montserrat, sans-serif",
+      fontSize: 25,
+      fontWeight: "700",
+      fill: "#fff",
+      align: "center",
+      dropShadow: true,
+    });
+    const label = new PIXI.Text(configs[i].name.toUpperCase(), labelStyle);
+    label.anchor.set(0.5);
+    label.position.set(menuX, btnY);
+    menuContainer.addChild(btn, label);
+    menuButtons.push(btn);
+  }
+
+  drawHighlight(menuButtons[activeConfigIndex].position.x, menuButtons[activeConfigIndex].position.y);
+  menuContainer.addChildAt(shadow, 0);
+  menuContainer.addChildAt(highlight, 1);
 }
 
-window.addEventListener('hashchange', boot);
-window.addEventListener('popstate', boot); // para rutas tipo /admin
-window.addEventListener('DOMContentLoaded', boot);
+function adjustContainerScaleAndPosition(container: PIXI.Container, app: PIXI.Application) {
+  const physicalHeight = 450;
+  const displayHeight = app.renderer.height;
+  const displayWidth = app.renderer.width;
+  const stretchY = physicalHeight / displayHeight;
+  const scale = displayHeight / physicalHeight;
+  container.scale.set(scale, stretchY * scale);
+  container.position.set(displayWidth / 2, displayHeight / 2);
+}
+
+function showPrizeOverlay(app: PIXI.Application, prize: string) {
+  const overlay = new PIXI.Container();
+  const bg = new PIXI.Graphics();
+  const boxWidth = 600;
+  const boxHeight = 300;
+  bg.beginFill(0x000000, 0.7);
+  bg.roundRect(0, 0, boxWidth, boxHeight, 20);
+  bg.endFill();
+
+  const textStyle = new PIXI.TextStyle({
+    fontFamily: "Luckiest Guy, sans-serif",
+    fontSize: 57.6,
+    fill: "#ffff00",
+    align: "center",
+    dropShadow: true,
+  });
+
+  const label = new PIXI.Text(`¡Ganaste ${prize}!`, textStyle);
+  label.anchor.set(0.5);
+  label.position.set(boxWidth / 2, boxHeight / 2);
+  overlay.addChild(bg, label);
+  overlay.pivot.set(boxWidth / 2, boxHeight / 2);
+  overlay.position.set(app.screen.width / 2, app.screen.height / 2);
+  app.stage.addChild(overlay);
+  overlay.alpha = 0;
+  gsap.to(overlay, { alpha: 1, duration: 0.8, ease: "power2.out" });
+  overlay.eventMode = "static";
+  overlay.cursor = "pointer";
+  overlay.on("pointerdown", () => app.stage.removeChild(overlay));
+  setTimeout(() => app.stage.removeChild(overlay), 4000);
+}
+
+boot();

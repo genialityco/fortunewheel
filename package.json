@@ -4,30 +4,21 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 5736 --host",
+    "dev": "vite --port 5736",
     "build": "tsc --noEmit --skipLibCheck && vite build || node scripts/fallback-build.js",
-    "preview": "vite preview --host --port 5736",
-    "prod": "serve -l 0.0.0.0:5736 dist",
-    "server": "node backend/server.js"
+    "preview": "vite preview",
+    "prod": "serve -l 5736 dist"
   },
   "devDependencies": {
-    "@types/react": "^19.1.12",
-    "@types/react-dom": "^19.1.8",
     "typescript": "~5.7.2",
-    "vite": "^6.3.5"
+    "vite": "^6.3.1"
   },
   "dependencies": {
     "@pixi/filter-blur": "^7.4.3",
     "@pixi/filter-glow": "^5.2.1",
     "@pixi/particle-emitter": "^5.0.8",
     "@types/pixi.js": "^5.0.0",
-    "@types/socket.io-client": "^1.4.36",
-    "firebase": "^12.1.0",
     "gsap": "^3.12.7",
-    "pixi.js": "^8.10.2",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1"
+    "pixi.js": "^8.10.2"
   }
 }
