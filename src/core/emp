@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
+import { BLEND_MODES } from "pixi.js";
 import { GifSprite } from "pixi.js/gif";
-import { WheelStand } from "./core/Wheel";
-import { LEDRing } from "./core/LEDRing";
-import { Confetti } from "./core/Confetti";
+import { WheelStand } from "./Wheel";
+import { LEDRing } from "./LEDRing";
+import { Confetti } from "./Confetti";
 import gsap from "gsap";
-import { Marker } from "./core/Marker";
 import { BlurFilter } from "@pixi/filter-blur";
 import { GlowFilter } from "@pixi/filter-glow";
-import { Prize } from "./core/rng";
+import { Prize } from "./rng";
 
 async function boot() {
   const app = new PIXI.Application();
@@ -94,9 +94,11 @@ async function boot() {
 
   // --- White degraded shadow for active button ---
   const shadow = new PIXI.Graphics();
-  // Use a blur filter for the shadow
-  const blurFilter = new BlurFilter({ strength: 8 });
-  shadow.filters = [blurFilter];
+  // BlurFilter cannot be applied directly to PIXI.Graphics in some PIXI versions.
+  // If you need a blurred shadow, draw the shadow on a PIXI.Sprite or use a pre-blurred image.
+  // For now, remove the filter to avoid the error:
+  // const blurFilter = new BlurFilter(8);
+  // shadow.filters = [blurFilter];
 
   // --- Highlight for active button ---
   const highlight = new PIXI.Graphics();
@@ -149,7 +151,7 @@ async function boot() {
         color: 0xffff00,
         quality: 0.5,
       });
-      wheel.filters = [glowFilter];
+      wheel.filters = [glowFilter as unknown as PIXI.Filter];
 
       // Animate the glow effect
       gsap.to(glowFilter, {
@@ -172,8 +174,7 @@ async function boot() {
         wheel.width,
         wheel.height
       );
-      shine.endFill();
-      shine.blendMode = 1; // Use numeric value for additive blend mode
+      // Use PIXI.BLEND_MODES.ADD for additive blend mode
       wheel.addChild(shine);
 
       gsap.to(shine, {
@@ -205,8 +206,7 @@ async function boot() {
       fontWeight: "700",
       fill: "#fff",
       align: "center",
-      dropShadow: true,
-      dropShadowDistance: 2,
+      dropShadow: true
     });
     const label = new PIXI.Text(configs[i].name.toUpperCase(), labelStyle);
     label.anchor.set(0.5);
@@ -330,9 +330,6 @@ function showPrizeOverlay(app: PIXI.Application, prize: string) {
     fill: "#ffff00",
     align: "center",
     dropShadow: true,
-    dropShadowColor: "#000",
-    dropShadowBlur: 5,
-    dropShadowDistance: 4,
   });
 
   const label = new PIXI.Text(`¡Ganaste ${prize}!`, textStyle);
