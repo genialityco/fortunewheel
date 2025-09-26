@@ -1,34 +1,34 @@
 [
   {
     "name": "ELITE",
-    "color": "#0A2540",
+    "color": "#FFD700",
     "prizes": [
-      { "label": "MUG",        "prob": 0.03, "color": "#93C5FD" },
-      { "label": "ABANICO",    "prob": 0.10, "color": "#60A5FA" },
-      { "label": "TERMO",      "prob": 0.13, "color": "#3B82F6" },
-      { "label": "PROTEINA",   "prob": 0.21, "color": "#2563EB" },
-      { "label": "GORRA",      "prob": 0.03, "color": "#1D4ED8" },
-      { "label": "MUG",        "prob": 0.10, "color": "#1E40AF" },
-      { "label": "ABANICO",    "prob": 0.13, "color": "#1E3A8A" },
-      { "label": "TERMO",      "prob": 0.21, "color": "#172554" },
-      { "label": "PROTEINA",   "prob": 0.05, "color": "#0B173D" }
+      { "label": "$2,000",           "prob": 0.03, "color": "#FFE066" },
+      { "label": "Mug.",             "prob": 0.10, "color": "#FFD700" },
+      { "label": "Vaso cervecero.",  "prob": 0.13, "color": "#FFD100" },
+      { "label": "termo.",           "prob": 0.21, "color": "#FFC400" },
+      { "label": "Llavero",          "prob": 0.03, "color": "#FFB800" },
+      { "label": "$5.000",           "prob": 0.10, "color": "#E6A700" },
+      { "label": "$2,000",           "prob": 0.13, "color": "#CC9E00" },
+      { "label": "Mug.",             "prob": 0.21, "color": "#B38F00" },
+      { "label": "Vaso cervecero.",  "prob": 0.05, "color": "#997700" }
     ]
   },
   {
-    "name": "ORO",
-    "color": "#FFD700",
-    "prizes": [
-      { "label": "MUG",        "prob": 0.03, "color": "#FFE066" },
-      { "label": "ABANICO",    "prob": 0.10, "color": "#FFD700" },
-      { "label": "TERMO",      "prob": 0.13, "color": "#FFD100" },
-      { "label": "PROTEINA",   "prob": 0.21, "color": "#FFC400" },
-      { "label": "GORRA",      "prob": 0.03, "color": "#FFB800" },
-      { "label": "MUG",        "prob": 0.10, "color": "#E6A700" },
-      { "label": "ABANICO",    "prob": 0.13, "color": "#CC9E00" },
-      { "label": "TERMO",      "prob": 0.21, "color": "#B38F00" },
-      { "label": "PROTEINA",   "prob": 0.05, "color": "#997700" }
-    ]
-  },
+  "name": "ORO",
+  "color": "#0A2540",
+  "prizes": [
+    { "label": "$2,000",           "prob": 0.03, "color": "#FFE066" },
+    { "label": "Mug.",             "prob": 0.10, "color": "#FFD700" },
+    { "label": "Vaso cervecero.",  "prob": 0.13, "color": "#FFD100" },
+    { "label": "termo.",           "prob": 0.21, "color": "#FFC400" },
+    { "label": "Llavero",          "prob": 0.03, "color": "#FFB800" },
+    { "label": "$5.000",           "prob": 0.10, "color": "#E6A700" },
+    { "label": "$2,000",           "prob": 0.13, "color": "#CC9E00" },
+    { "label": "Mug.",             "prob": 0.21, "color": "#B38F00" },
+    { "label": "Vaso cervecero.",  "prob": 0.05, "color": "#997700" }
+  ]
+},
   {
     "name": "EXCLUSIVO",
     "color": "#005500",
