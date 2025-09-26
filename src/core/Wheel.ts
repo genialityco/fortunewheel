@@ -66,9 +66,7 @@ class Wheel extends PIXI.Container {
         fontFamily: "Montserrat, sans-serif",
         fontSize: 20,
         fontWeight: "700",
-        fill: "#ffffff",
-        stroke: "#000000",
-        dropShadow: true,
+        fill: "#1b1754ff",
         align: "center",
         wordWrap: true,
         wordWrapWidth: radius * 1.2,
@@ -156,7 +154,7 @@ export class WheelStand extends PIXI.Container {
     this.fondoSprite.position.set(0, -20);
     this.fondoSprite.width = (radius + 200) * 2;
     this.fondoSprite.height = (radius + 200) * 2;
-    this.addChildAt(this.fondoSprite, 0);
+    this.addChildAt(this.fondoSprite, 1);
   }
 
   spin(onComplete: (result: Prize) => void) {

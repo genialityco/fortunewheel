@@ -196,15 +196,14 @@ async function boot() {
     const isElite = String(configs[i].name).toUpperCase() === "ELITE";
     const labelStyle = new PIXI.TextStyle({
       fontFamily: "Montserrat, sans-serif",
-      fontSize: Math.round(150 * buttonScale),
-      fontWeight: "700",
+      fontSize: Math.round(200 * buttonScale),
+      fontWeight: "bold",
       fill: isElite ? "#93C5FD" : "#0A2540", // ELITE -> azul clarito, otros -> azul oscuro
       align: "right",
-      dropShadow: true,
     });
     const label = new PIXI.Text(configs[i].name.toUpperCase(), labelStyle);
     label.anchor.set(1, 0.5); // ancla al borde derecho, centrado vertical
-    const labelRightPad = 50; // padding desde el borde derecho del botón
+    const labelRightPad = 60; // padding desde el borde derecho del botón
     label.position.set(menuX + btnWidth - labelRightPad, btnY);
 
     menuContainer.addChild(btn2, label);
