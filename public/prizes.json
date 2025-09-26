@@ -17,17 +17,18 @@
     "name": "ORO",
     "color": "#0000FF",
     "prizes": [
-      { "label": "Mug",             "prob": 0.04, "color": "#1B67D3" },
-      { "label": "Vaso cervecero",  "prob": 0.04, "color": "#0B3689" },
-      { "label": "termo",           "prob": 0.07, "color": "#166AD0" },
-      { "label": "Llavero",         "prob": 0.09, "color": "#1953BD" },
-      { "label":"Cuaderno",          "prob": 0.03, "color": "#1953BD" },
-      { "label": "Mug",             "prob": 0.04, "color": "#1B67D3" },
-      { "label": "Vaso cervecero",  "prob": 0.04, "color": "#0B3689" },
-      { "label": "termo",           "prob": 0.07, "color": "#166AD0" },
-      { "label": "Llavero",         "prob": 0.09, "color": "#1953BD" },
-      { "label":"Cuaderno",          "prob": 0.03, "color": "#1953BD" }
-    ]
+  { "label": "Mug",            "prob": 0.04, "color": "#FFD93D" },  
+  { "label": "Vaso cervecero", "prob": 0.04, "color": "#FFC300" },  
+  { "label": "Termo",          "prob": 0.07, "color": "#FFB347" },  
+  { "label": "Llavero",        "prob": 0.09, "color": "#F6C90E" },  
+  { "label": "Cuaderno",       "prob": 0.03, "color": "#FFDE59" },  
+  { "label": "Mug",            "prob": 0.04, "color": "#FFD93D" },
+  { "label": "Vaso cervecero", "prob": 0.04, "color": "#FFC300" },
+  { "label": "Termo",          "prob": 0.07, "color": "#FFB347" },
+  { "label": "Llavero",        "prob": 0.09, "color": "#F6C90E" },
+  { "label": "Cuaderno",       "prob": 0.03, "color": "#FFDE59" }
+]
+
 
   }
 ]
