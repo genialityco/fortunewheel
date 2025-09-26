@@ -44,13 +44,14 @@ async function boot() {
   ));
   backgroundContainer.addChild(fondo);
 
-  const monedasTexture = await PIXI.Assets.load("/assets/MONEDAS.png");
+  const monedasTexture = await PIXI.Assets.load("./images/MONEDAS.png");
   const monedas = new PIXI.Sprite(monedasTexture);
   monedas.anchor.set(0.5);
-  monedas.position.set(app.screen.width / 2, app.screen.height / 2);
-  monedas.scale.set(
-    Math.max(app.screen.width / monedasTexture.width, app.screen.height / monedasTexture.height) / 1.5
-  );
+  monedas.position.set(app.screen.width / 2, app.screen.height / 2 + 150);
+  monedas.scale.set(1);
+  // monedas.scale.set(
+  //   Math.max(app.screen.width / monedasTexture.width, app.screen.height / monedasTexture.height) / 1.5
+  // );
   backgroundContainer.addChild(monedas);
 
   const configs = await (await fetch("/prizes.json")).json();
@@ -58,17 +59,18 @@ async function boot() {
   const ring = new LEDRing();
   const confetti = new Confetti();
   let wheel = new WheelStand(configs[activeConfigIndex].prizes as Prize[], ring, confetti);
+  const positionButtonWheel = 100
   wheel.position.set(0, 0);
   ring.position.copyFrom(wheel.position);
   confetti.position.copyFrom(wheel.position);
   wheelContainer.addChild(wheel, ring, confetti);
-  adjustContainerScaleAndPosition(wheelContainer, app);
+  scaleAndCenterWheelContainer(wheelContainer, app, 1.8, positionButtonWheel);
 
   const buttonTexture = await PIXI.Assets.load("/assets/wheel_button.png");
   const btn = new PIXI.Sprite(buttonTexture);
   btn.anchor.set(0.5);
-  btn.scale.set(0.3, 0.15); // Ajuste de proporciones para que no se vea estirado
-  btn.position.set(app.screen.width / 2, app.screen.height / 2);
+  btn.scale.set(0.4, 0.4); // Ajuste de proporciones para que no se vea estirado
+  btn.position.set(app.screen.width / 2, app.screen.height / 2 + positionButtonWheel);
   btn.eventMode = "static";
 
   let isSpinning = false;
@@ -82,44 +84,48 @@ async function boot() {
   });
   uiContainer.addChild(btn);
 
-  const legalesTexture = await PIXI.Assets.load("/assets/LEGALES.png");
+  const legalesTexture = await PIXI.Assets.load("./images/LEGALES.png");
   const legales = new PIXI.Sprite(legalesTexture);
   legales.anchor.set(0.5, 1);
-  legales.scale.set((app.screen.width * 0.8) / legalesTexture.width);
-  legales.position.set(app.screen.width / 2, app.screen.height - 10);
+  legales.scale.set((app.screen.width * 1) / legalesTexture.width);
+  legales.position.set(app.screen.width / 2, app.screen.height - 50);
   uiContainer.addChild(legales);
 
   const logoTexture = await PIXI.Assets.load("/assets/FRASE_COPY.png");
   const logo = new PIXI.Sprite(logoTexture);
   logo.anchor.set(0.5);
-  logo.scale.set(0.2);
-  logo.position.set(app.screen.width / 2, app.screen.height / 2 - 300);
-  //uiContainer.addChild(logo);
+  logo.scale.set(0.8);
+  logo.position.set(app.screen.width / 2, app.screen.height / 2 - 700);
+  uiContainer.addChild(logo);
 
-  const moneda1Texture = await PIXI.Assets.load("/assets/MONEDA_01.png");
   const moneda2Texture = await PIXI.Assets.load("/assets/MONEDA_02.png");
-  const moneda1 = new PIXI.Sprite(moneda1Texture);
   const moneda2 = new PIXI.Sprite(moneda2Texture);
-  moneda1.anchor.set(0.5);
   moneda2.anchor.set(0.5);
-  moneda1.scale.set(0.2);
-  moneda2.scale.set(0.2);
-  moneda1.position.set(app.screen.width / 2 - 300, app.screen.height / 2 + 180);
-  moneda2.position.set(app.screen.width / 2 + 300, app.screen.height / 2 + 150);
-  uiContainer.addChild(moneda1, moneda2);
+  moneda2.scale.set(0.45);
+  moneda2.position.set(app.screen.width / 2 + 300, app.screen.height / 2 + 650);
+  uiContainer.addChild(moneda2);
 
-  gsap.to(moneda1, { y: moneda1.position.y - 20, duration: 1.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
   gsap.to(moneda2, { y: moneda2.position.y - 20, duration: 1.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
 
-  const buttonImages = ["/assets/BOTON_02.png", "/assets/BOTON_03.png"];
+  const buttonImages = ["/assets/BOTON_01.png","/assets/BOTON_02.png", "/assets/BOTON_03.png"];
   const btnTextures = await Promise.all(buttonImages.map(img => PIXI.Assets.load(img)));
   const buttonScale = 0.25;
   const btnHeight = btnTextures[0].height * buttonScale;
   const btnWidth = btnTextures[0].width * buttonScale;
-  const buttonSpacing = btnHeight - btnHeight / 3;
+
+  // === OFFSET VERTICAL PARA MOVER EL MENÚ HACIA ABAJO ===
+  const menuYOffset = 650; // <-- ajusta este valor para bajar/subir todos los botones y labels
+
+  // Separación vertical entre botones
+  const buttonSpacing = btnHeight + btnHeight / 3;
+
+  // Posición X base del menú
   const menuX = 100;
+
+  // Altura total del menú y origen Y (centrado + offset)
   const menuHeight = configs.length * buttonSpacing;
-  const menuY = app.screen.height / 2 - menuHeight / 2;
+  const menuY = app.screen.height / 2 - menuHeight / 2 + menuYOffset;
+
   const shadow = new PIXI.Graphics();
   shadow.beginFill(0x000000, 0.4);
   shadow.drawRoundedRect(menuX - btnWidth / 2 - 10, menuY - btnHeight / 4 - 15, btnWidth + 20, menuHeight + 30, 40);
@@ -138,16 +144,16 @@ async function boot() {
   }
 
   for (let i = 0; i < configs.length; i++) {
-    const btnTexture = btnTextures[i % btnTextures.length];
-    const btn = new PIXI.Sprite(btnTexture);
-    btn.anchor.set(0.5);
-    btn.scale.set(buttonScale);
+    const btnTexture2 = btnTextures[i % btnTextures.length];
+    const btn2 = new PIXI.Sprite(btnTexture2);
+    btn2.anchor.set(0.5);
+    btn2.scale.set(buttonScale * 2); // respeté tu escala actual
     const btnY = menuY + i * buttonSpacing;
-    btn.position.set(menuX, btnY);
-    btn.eventMode = "static";
-    btn.cursor = "pointer";
+    btn2.position.set(menuX, btnY);
+    btn2.eventMode = "static";
+    btn2.cursor = "pointer";
 
-    btn.on("pointerdown", () => {
+    btn2.on("pointerdown", () => {
       if (activeConfigIndex === i) return;
       activeConfigIndex = i;
 
@@ -176,7 +182,7 @@ async function boot() {
       wheelContainer.addChildAt(wheel, 0);
       ring.position.copyFrom(wheel.position);
       confetti.position.copyFrom(wheel.position);
-      adjustContainerScaleAndPosition(wheelContainer, app);
+      scaleAndCenterWheelContainer(wheelContainer, app, 2, 200);
 
       const activeBtn = menuButtons[activeConfigIndex];
       drawHighlight(activeBtn.position.x, activeBtn.position.y);
@@ -184,19 +190,22 @@ async function boot() {
       menuContainer.setChildIndex(highlight, 1);
     });
 
+    // === SOLO ESTE BLOQUE CAMBIADO: label a la DERECHA y color AZUL OSCURO ===
     const labelStyle = new PIXI.TextStyle({
       fontFamily: "Montserrat, sans-serif",
-      fontSize: 25,
+      fontSize: Math.round(150 * buttonScale),
       fontWeight: "700",
-      fill: "#fff",
-      align: "center",
+      fill: "#0A2540",      // azul oscuro
+      align: "right",
       dropShadow: true,
     });
     const label = new PIXI.Text(configs[i].name.toUpperCase(), labelStyle);
-    label.anchor.set(0.5);
-    label.position.set(menuX, btnY);
-    menuContainer.addChild(btn, label);
-    menuButtons.push(btn);
+    label.anchor.set(1, 0.5); // ancla al borde derecho, centrado vertical
+    const labelRightPad = 50; // padding desde el borde derecho del botón
+    label.position.set(menuX + btnWidth - labelRightPad, btnY);
+
+    menuContainer.addChild(btn2, label);
+    menuButtons.push(btn2);
   }
 
   drawHighlight(menuButtons[activeConfigIndex].position.x, menuButtons[activeConfigIndex].position.y);
@@ -204,14 +213,21 @@ async function boot() {
   menuContainer.addChildAt(highlight, 1);
 }
 
-function adjustContainerScaleAndPosition(container: PIXI.Container, app: PIXI.Application) {
-  const physicalHeight = 450;
-  const displayHeight = app.renderer.height;
-  const displayWidth = app.renderer.width;
-  const stretchY = physicalHeight / displayHeight;
-  const scale = displayHeight / physicalHeight;
-  container.scale.set(scale, stretchY * scale);
-  container.position.set(displayWidth / 2, displayHeight / 2);
+function scaleAndCenterWheelContainer(
+  container: PIXI.Container,
+  app: PIXI.Application,
+  uniformScale: number,
+  offsetY: number = 0
+) {
+  if (container.children.length === 0) return;
+
+  const b = container.getLocalBounds();
+  const cx = b.x + b.width / 2;
+  const cy = b.y + b.height / 2;
+
+  container.pivot.set(cx, cy);
+  container.scale.set(uniformScale);
+  container.position.set(app.screen.width / 2, app.screen.height / 2 + offsetY);
 }
 
 function showPrizeOverlay(app: PIXI.Application, prize: string) {
@@ -220,7 +236,7 @@ function showPrizeOverlay(app: PIXI.Application, prize: string) {
   const boxWidth = 600;
   const boxHeight = 300;
   bg.beginFill(0x000000, 0.7);
-  bg.roundRect(0, 0, boxWidth, boxHeight, 20);
+  bg.drawRoundedRect(0, 0, boxWidth, boxHeight, 20); // corregido para Pixi
   bg.endFill();
 
   const textStyle = new PIXI.TextStyle({

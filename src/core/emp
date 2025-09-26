@@ -1,139 +1,177 @@
+// main.ts reorganizado con menú de botones reactivado
+
 import * as PIXI from "pixi.js";
-import { BLEND_MODES } from "pixi.js";
-import { GifSprite } from "pixi.js/gif";
+// import { BLEND_MODES } from "pixi.js";
+// import { GifSprite } from "pixi.js/gif";
 import { WheelStand } from "./Wheel";
 import { LEDRing } from "./LEDRing";
 import { Confetti } from "./Confetti";
+import "./core/touchDebugOverlay";
+import './touchDebugOverlay.css';
 import gsap from "gsap";
-import { BlurFilter } from "@pixi/filter-blur";
+// import { Marker } from "./core/Marker";
+// Use PIXI's built-in BlurFilter for compatibility
+const { BlurFilter } = PIXI;
 import { GlowFilter } from "@pixi/filter-glow";
 import { Prize } from "./rng";
 
 async function boot() {
-  const app = new PIXI.Application();
-  await app.init({ background: "#101020", resizeTo: window });
+  const app = new PIXI.Application({
+    width: window.innerWidth,
+    height: window.innerHeight,
+    backgroundColor: 0x000000,
+    resolution: window.devicePixelRatio || 1,
+    autoDensity: true,
+  });
+
+  await app.init({ resizeTo: window });
   document.body.appendChild(app.canvas);
 
-  // --- Add FONDO_MALUMA.mp4 as PIXI video background ---
-  const fondoTexture = await PIXI.Assets.load("/assets/FONDO.png");
-  const fondo = new PIXI.Sprite(fondoTexture);
-  fondo.anchor.set(0.5);
-  fondo.position.set(window.innerWidth / 2, window.innerHeight / 2);
+  const backgroundContainer = new PIXI.Container();
+  const wheelContainer = new PIXI.Container();
+  const uiContainer = new PIXI.Container();
+  const menuContainer = new PIXI.Container();
+
+  app.stage.addChild(backgroundContainer, wheelContainer, uiContainer, menuContainer);
+
+  // --- Fondo principal (VIDEO en lugar de imagen) ---
+  const fondoTexture = PIXI.Texture.from("/assets/FONDO.mp4"); // mismo nombre de variable
+  const fondo = new PIXI.Sprite(fondoTexture);                 // mismo nombre de variable
+
+  // Configuración recomendada para autoplay en navegadores
+  const videoEl = (fondoTexture.baseTexture.resource as any).source as HTMLVideoElement;
+  videoEl.muted = true;
+  videoEl.loop = true;
+  videoEl.playsInline = true;
+  videoEl.autoplay = true;
+  videoEl.play().catch(() => { /* ignorar bloqueo de autoplay */ });
 
   fondo.anchor.set(0.5);
-  fondo.position.set(window.innerWidth / 2, window.innerHeight / 2);
+  fondo.position.set(app.screen.width / 2, app.screen.height / 2);
 
-  const scale = Math.max(
-    window.innerWidth / fondoTexture.width,
-    window.innerHeight / fondoTexture.height
-  );
-  fondo.scale.set(scale);
+  const fitVideo = () => {
+    const w = fondoTexture.width || videoEl.videoWidth || 1;
+    const h = fondoTexture.height || videoEl.videoHeight || 1;
+    const scale = Math.max(app.screen.width / w, app.screen.height / h);
+    fondo.scale.set(scale);
+    fondo.position.set(app.screen.width / 2, app.screen.height / 2);
+  };
+  if (videoEl.readyState >= 2) {
+    fitVideo();
+  } else {
+    videoEl.addEventListener("loadeddata", fitVideo, { once: true });
+  }
 
-  app.stage.addChild(fondo);
+  backgroundContainer.addChild(fondo);
 
-  // --- Add MONEDAS.png as another background layer ---
+  // --- Capa de monedas (imagen detrás de la ruleta) ---
   const monedasTexture = await PIXI.Assets.load("/assets/MONEDAS.png");
   const monedas = new PIXI.Sprite(monedasTexture);
   monedas.anchor.set(0.5);
-  monedas.position.set(window.innerWidth / 2, window.innerHeight / 2);
+  monedas.position.set(app.screen.width / 2, app.screen.height / 2);
+  monedas.scale.set(
+    Math.max(app.screen.width / monedasTexture.width, app.screen.height / monedasTexture.height) / 1.5
+  );
+  backgroundContainer.addChild(monedas);
 
-  // Scale to half of the original size
-  const monedasScale =
-    Math.max(
-      window.innerWidth / monedasTexture.width,
-      window.innerHeight / monedasTexture.height
-    ) / 1.5;
-  monedas.scale.set(monedasScale);
-
-  app.stage.addChild(monedas);
-  // ----------------------------------------
-
-  // Load all wheel configurations
   const configs = await (await fetch("/prizes.json")).json();
   let activeConfigIndex = 0;
-
   const ring = new LEDRing();
   const confetti = new Confetti();
-  const prizes = configs[activeConfigIndex].prizes as Prize[];
-
-  let wheel = new WheelStand(prizes, ring, confetti);
-
-  wheel.position.set(window.innerWidth / 2, window.innerHeight / 2);
+  let wheel = new WheelStand(configs[activeConfigIndex].prizes as Prize[], ring, confetti);
+  wheel.position.set(0, 0);
+  wheel.scale.set(0.1);
   ring.position.copyFrom(wheel.position);
   confetti.position.copyFrom(wheel.position);
+  wheelContainer.addChild(wheel, ring, confetti);
+  adjustContainerScaleAndPosition(wheelContainer, app);
+
+  const buttonTexture = await PIXI.Assets.load("/assets/wheel_button.png");
+  const btn = new PIXI.Sprite(buttonTexture);
+  btn.anchor.set(0.5);
+  btn.scale.set(0.3, 0.15); // Ajuste de proporciones para que no se vea estirado
+  btn.position.set(app.screen.width / 2, app.screen.height / 2);
+  btn.eventMode = "static";
+
+  let isSpinning = false;
+  btn.on("pointerdown", () => {
+    if (isSpinning) return;
+    isSpinning = true;
+    wheel.spin((prize: Prize) => {
+      showPrizeOverlay(app, prize.label);
+      isSpinning = false;
+    });
+  });
+  uiContainer.addChild(btn);
+
+  const legalesTexture = await PIXI.Assets.load("/assets/LEGALES.png");
+  const legales = new PIXI.Sprite(legalesTexture);
+  legales.anchor.set(0.5, 1);
+  legales.scale.set((app.screen.width * 0.8) / legalesTexture.width);
+  legales.position.set(app.screen.width / 2, app.screen.height - 10);
+  uiContainer.addChild(legales);
 
   const logoTexture = await PIXI.Assets.load("/assets/FRASE_COPY.png");
   const logo = new PIXI.Sprite(logoTexture);
   logo.anchor.set(0.5);
-  logo.scale.set(0.2); // Ajusta el tamaño según necesites
-  logo.position.set(wheel.position.x, wheel.position.y - wheel.height / 1); // Encima de la ruleta
-  app.stage.addChild(logo);
+  logo.scale.set(0.2);
+  logo.position.set(app.screen.width / 2, app.screen.height / 2 - 300);
+  // uiContainer.addChild(logo); // actívalo si quieres mostrar el logo encima
 
-  // Add background first, then wheel/ring/confetti above
-  app.stage.addChild(wheel, ring, confetti);
+  // --- Monedas laterales (izquierda y derecha) ---
+  const moneda1Texture = await PIXI.Assets.load("/assets/MONEDA_01.png");
+  const moneda2Texture = await PIXI.Assets.load("/assets/MONEDA_02.png");
+  const moneda1 = new PIXI.Sprite(moneda1Texture);
+  const moneda2 = new PIXI.Sprite(moneda2Texture);
+  moneda1.anchor.set(0.5);
+  moneda2.anchor.set(0.5);
+  moneda1.scale.set(0.2);
+  moneda2.scale.set(0.2);
+  moneda1.position.set(app.screen.width / 2 - 300, app.screen.height / 2 + 180);
+  moneda2.position.set(app.screen.width / 2 + 300, app.screen.height / 2 + 150);
 
-  // --- MENU BUTTONS ---
-  const buttonImages = [
-    "/assets/BOTON_02.png",
-    "/assets/BOTON_03.png",
-  ];
-  const menuContainer = new PIXI.Container();
+  // >>> Cambio solicitado: ocultar la moneda izquierda <<<
+  moneda1.visible = false;
+
+  uiContainer.addChild(moneda1, moneda2);
+
+  // Animación de flotación: solo a la moneda derecha
+  // gsap.to(moneda1, { y: moneda1.position.y - 20, duration: 1.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
+  gsap.to(moneda2, { y: moneda2.position.y - 20, duration: 1.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
+
+  // --- Menú lateral (botones) ---
+  const buttonImages = ["/assets/BOTON_02.png", "/assets/BOTON_03.png"];
+  const btnTextures = await Promise.all(buttonImages.map(img => PIXI.Assets.load(img)));
   const buttonScale = 0.25;
-
-  // Preload button textures to get their height for layout
-  const btnTextures = await Promise.all(
-    buttonImages.map((img) => PIXI.Assets.load(img))
-  );
   const btnHeight = btnTextures[0].height * buttonScale;
   const btnWidth = btnTextures[0].width * buttonScale;
-  const buttonSpacing = btnHeight - btnHeight / 3; // Only 6px gap between buttons
-
+  const buttonSpacing = btnHeight - btnHeight / 3;
   const menuX = 100;
   const menuHeight = configs.length * buttonSpacing;
-  const menuY = window.innerHeight / 2 - menuHeight / 2;
+  const menuY = app.screen.height / 2 - menuHeight / 2;
 
-  // --- White degraded shadow for active button ---
   const shadow = new PIXI.Graphics();
-  // BlurFilter cannot be applied directly to PIXI.Graphics in some PIXI versions.
-  // If you need a blurred shadow, draw the shadow on a PIXI.Sprite or use a pre-blurred image.
-  // For now, remove the filter to avoid the error:
-  // const blurFilter = new BlurFilter(8);
-  // shadow.filters = [blurFilter];
+  shadow.beginFill(0x000000, 0.4);
+  shadow.drawRoundedRect(menuX - btnWidth / 2 - 10, menuY - btnHeight / 4 - 15, btnWidth + 20, menuHeight + 30, 40);
+  shadow.endFill();
+  shadow.filters = [new BlurFilter(8)];
 
-  // --- Highlight for active button ---
   const highlight = new PIXI.Graphics();
 
+  const menuButtons: PIXI.Sprite[] = [];
   function drawHighlight(x: number, y: number) {
     highlight.clear();
-    highlight.lineStyle(5, 0xffffff, 1); // width, color, alpha
-    highlight.beginFill(0, 0); // transparent fill, required for stroke to show
-    highlight.drawRoundedRect(
-      x - btnWidth / 2,
-      y - btnHeight / 4 - 5,
-      btnWidth - 27,
-      btnHeight / 2 + 10,
-      30
-    );
+    highlight.lineStyle(5, 0xffffff, 1);
+    highlight.beginFill(0, 0);
+    highlight.drawRoundedRect(x - btnWidth / 2, y - btnHeight / 4 - 5, btnWidth - 27, btnHeight / 2 + 10, 30);
     highlight.endFill();
   }
-  // --- END Highlight ---
-
-  function drawShadow(x: number, y: number) {
-    shadow.clear();
-    // Draw a white ellipse, faded (alpha)
-    shadow.beginFill(0xffffff, 0.28);
-    shadow.drawEllipse(x, y, btnWidth / 2, btnHeight / 2);
-    shadow.endFill();
-  }
-  // Store button references for shadow/highlight movement
-  const menuButtons: PIXI.Sprite[] = [];
 
   for (let i = 0; i < configs.length; i++) {
     const btnTexture = btnTextures[i % btnTextures.length];
     const btn = new PIXI.Sprite(btnTexture);
     btn.anchor.set(0.5);
     btn.scale.set(buttonScale);
-    // Calculate y so buttons are evenly spaced and menu is vertically centered
     const btnY = menuY + i * buttonSpacing;
     btn.position.set(menuX, btnY);
     btn.eventMode = "static";
@@ -143,70 +181,46 @@ async function boot() {
       if (activeConfigIndex === i) return;
       activeConfigIndex = i;
 
-      // Add glowing effect to the wheel
-      const glowFilter = new GlowFilter({
-        distance: 15,
-        outerStrength: 2,
-        innerStrength: 1,
-        color: 0xffff00,
-        quality: 0.5,
-      });
+      const glowFilter = new GlowFilter({ distance: 15, outerStrength: 2, innerStrength: 1, color: 0xffff00 });
       wheel.filters = [glowFilter as unknown as PIXI.Filter];
-
-      // Animate the glow effect
       gsap.to(glowFilter, {
         outerStrength: 5,
         innerStrength: 3,
         duration: 0.5,
         yoyo: true,
         repeat: 1,
-        onComplete: () => {
-          wheel.filters = null; // Remove the glow effect after animation
-        },
+        onComplete: () => (wheel.filters = null),
       });
 
-      // Add shining effect to the wheel
       const shine = new PIXI.Graphics();
       shine.beginFill(0xffffff, 0.5);
-      shine.drawRect(
-        -wheel.width / 2,
-        -wheel.height / 2,
-        wheel.width,
-        wheel.height
-      );
-      // Use PIXI.BLEND_MODES.ADD for additive blend mode
+      shine.drawRect(-wheel.width / 2, -wheel.height / 2, wheel.width, wheel.height);
+      // shine.blendMode = BLEND_MODES.ADD; // habilítalo si importas BLEND_MODES
       wheel.addChild(shine);
+      gsap.to(shine, { alpha: 0, duration: 0.5, onComplete: () => { wheel.removeChild(shine); } });
 
-      gsap.to(shine, {
-        alpha: 0,
-        duration: 0.5,
-        onComplete: () => {
-          wheel.removeChild(shine); // Remove the shine effect after animation
-        },
-      });
-
-      app.stage.removeChild(wheel);
+      wheelContainer.removeChild(wheel);
       wheel.destroy();
       wheel = new WheelStand(configs[activeConfigIndex].prizes, ring, confetti);
-      wheel.position.set(window.innerWidth / 2, window.innerHeight / 2);
-      app.stage.addChildAt(wheel, 1);
+      wheel.position.set(0, 0);
+      wheelContainer.addChildAt(wheel, 0);
       ring.position.copyFrom(wheel.position);
       confetti.position.copyFrom(wheel.position);
+      adjustContainerScaleAndPosition(wheelContainer, app);
 
-      // Move shadow and highlight to new active button
       const activeBtn = menuButtons[activeConfigIndex];
       drawHighlight(activeBtn.position.x, activeBtn.position.y);
       menuContainer.setChildIndex(shadow, 0);
       menuContainer.setChildIndex(highlight, 1);
     });
-    // Add config name label INSIDE button, centered
+
     const labelStyle = new PIXI.TextStyle({
       fontFamily: "Montserrat, sans-serif",
       fontSize: 25,
       fontWeight: "700",
       fill: "#fff",
       align: "center",
-      dropShadow: true
+      dropShadow: true,
     });
     const label = new PIXI.Text(configs[i].name.toUpperCase(), labelStyle);
     label.anchor.set(0.5);
@@ -215,118 +229,33 @@ async function boot() {
     menuButtons.push(btn);
   }
 
-  // Draw initial shadow and highlight behind the first button
-  drawHighlight(
-    menuButtons[activeConfigIndex].position.x,
-    menuButtons[activeConfigIndex].position.y
-  );
+  drawHighlight(menuButtons[activeConfigIndex].position.x, menuButtons[activeConfigIndex].position.y);
   menuContainer.addChildAt(shadow, 0);
   menuContainer.addChildAt(highlight, 1);
+}
 
-  app.stage.addChild(menuContainer);
-  // --- END MENU ---
-
-  // spin button
-  const buttonTexture = await PIXI.Assets.load("/assets/wheel_button.png");
-  const btn = new PIXI.Sprite(buttonTexture);
-  btn.anchor.set(0.5);
-  btn.scale.set(0.15);
-  btn.position.copyFrom(wheel.position);
-  btn.eventMode = "static";
-
-  let isSpinning = false;
-
-  btn.on("pointerdown", () => {
-    if (isSpinning) return;
-    isSpinning = true;
-    wheel.spin((prize) => {
-      showPrizeOverlay(app, prize.label);
-      isSpinning = false;
-    });
-  });
-
-  const btn2 = new PIXI.Sprite(buttonTexture);
-  btn2.anchor.set(0.5);
-  btn2.scale.set(0.15);
-  const offsetX = 220; // ajusta este valor a tu gusto
-  btn2.position.set(wheel.position.x + offsetX, wheel.position.y);
-  btn2.eventMode = "static";
-
-  btn2.on("pointerdown", () => {
-    if (isSpinning) return;
-    isSpinning = true;
-    wheel.spin((prize) => {
-      showPrizeOverlay(app, prize.label);
-      isSpinning = false;
-    });
-  });
-
-  app.stage.addChild(btn);
-  app.stage.addChild(btn2);
-
-  // Load MONEDA_01.png and MONEDA_02.png and add them to the left and right of the wheel
-  const moneda1Texture = await PIXI.Assets.load("/assets/MONEDA_01.png");
-  const moneda2Texture = await PIXI.Assets.load("/assets/MONEDA_02.png");
-
-  const moneda1 = new PIXI.Sprite(moneda1Texture);
-  const moneda2 = new PIXI.Sprite(moneda2Texture);
-
-  moneda1.anchor.set(0.5);
-  moneda2.anchor.set(0.5);
-
-  // Scale down the size of the sprites
-  moneda1.scale.set(0.2);
-  moneda2.scale.set(0.2);
-
-  // Position MONEDA_01 to the left of the wheel and MONEDA_02 to the right
-  moneda1.position.set(
-    wheel.position.x - wheel.width / 2.8,
-    wheel.position.y + 180
-  );
-  moneda2.position.set(
-    wheel.position.x + wheel.width / 2.8,
-    wheel.position.y + 150
-  );
-
-  // Add floating animation using gsap
-  function animateFloating(sprite: PIXI.Sprite) {
-    gsap.to(sprite, {
-      y: sprite.position.y - 20,
-      duration: 1.5,
-      yoyo: true,
-      repeat: -1,
-      ease: "sine.inOut",
-    });
-  }
-
-  animateFloating(moneda1);
-  animateFloating(moneda2);
-
-  app.stage.addChild(moneda1, moneda2);
-
-  const legalesTexture = await PIXI.Assets.load("/assets/LEGALES.png");
-  const legales = new PIXI.Sprite(legalesTexture);
-  legales.anchor.set(0.5, 1);
-  legales.scale.set((app.screen.width * 0.8) / legalesTexture.width);
-  legales.position.set(app.screen.width / 2, app.screen.height - 10);
-  app.stage.addChild(legales);
+function adjustContainerScaleAndPosition(container: PIXI.Container, app: PIXI.Application) {
+  const physicalHeight = 450;
+  const displayHeight = app.renderer.height;
+  const displayWidth = app.renderer.width;
+  const stretchY = physicalHeight / displayHeight;
+  const scale = displayHeight / physicalHeight;
+  container.scale.set(scale, stretchY * scale);
+  container.position.set(displayWidth / 2, displayHeight / 2);
 }
 
 function showPrizeOverlay(app: PIXI.Application, prize: string) {
   const overlay = new PIXI.Container();
-
-  // Fondo (bg)
   const bg = new PIXI.Graphics();
   const boxWidth = 600;
   const boxHeight = 300;
   bg.beginFill(0x000000, 0.7);
-  bg.roundRect(0, 0, boxWidth, boxHeight, 20);
+  bg.drawRoundedRect(0, 0, boxWidth, boxHeight, 20); // <-- corregido
   bg.endFill();
 
-  // Texto centrado dentro del fondo
   const textStyle = new PIXI.TextStyle({
     fontFamily: "Luckiest Guy, sans-serif",
-    fontSize: 57.6, // Increased font size by 20% of the original (48 * 1.2)
+    fontSize: 57.6,
     fill: "#ffff00",
     align: "center",
     dropShadow: true,
@@ -334,25 +263,13 @@ function showPrizeOverlay(app: PIXI.Application, prize: string) {
 
   const label = new PIXI.Text(`¡Ganaste ${prize}!`, textStyle);
   label.anchor.set(0.5);
-  label.position.set(boxWidth / 2, boxHeight / 2); // CENTRADO dentro de bg
-
+  label.position.set(boxWidth / 2, boxHeight / 2);
   overlay.addChild(bg, label);
-
-  // Centramos todo el overlay en el centro de la pantalla
   overlay.pivot.set(boxWidth / 2, boxHeight / 2);
   overlay.position.set(app.screen.width / 2, app.screen.height / 2);
-
   app.stage.addChild(overlay);
-
-  // Animación de aparición
   overlay.alpha = 0;
-  gsap.to(overlay, {
-    alpha: 1,
-    duration: 0.8,
-    ease: "power2.out",
-  });
-
-  // Remover tras clic o tiempo
+  gsap.to(overlay, { alpha: 1, duration: 0.8, ease: "power2.out" });
   overlay.eventMode = "static";
   overlay.cursor = "pointer";
   overlay.on("pointerdown", () => app.stage.removeChild(overlay));
