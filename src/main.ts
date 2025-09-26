@@ -86,11 +86,11 @@ async function boot() {
   });
   uiContainer.addChild(btn);
 
-  const legalesTexture = await PIXI.Assets.load("./images/LEGALES.png");
+  const legalesTexture = await PIXI.Assets.load("./images/TEXTOS_LEGALES.png");
   const legales = new PIXI.Sprite(legalesTexture);
   legales.anchor.set(0.5, 1);
   legales.scale.set((app.screen.width * 1) / legalesTexture.width);
-  legales.position.set(app.screen.width / 2, app.screen.height - 50);
+  legales.position.set(app.screen.width / 2, app.screen.height - 10);
   uiContainer.addChild(legales);
 
   const logoTexture = await PIXI.Assets.load("/assets/FRASE_COPY.png");
