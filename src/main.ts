@@ -196,7 +196,7 @@ async function boot() {
     const isElite = String(configs[i].name).toUpperCase() === "ELITE";
     const labelStyle = new PIXI.TextStyle({
       fontFamily: "Montserrat, sans-serif",
-      fontSize: Math.round(200 * buttonScale),
+      fontSize: Math.round(150 * buttonScale),
       fontWeight: "bold",
       fill: isElite ? "#93C5FD" : "#0A2540", // ELITE -> azul clarito, otros -> azul oscuro
       align: "right",
