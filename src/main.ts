@@ -60,11 +60,13 @@ async function boot() {
   const confetti = new Confetti();
   let wheel = new WheelStand(configs[activeConfigIndex].prizes as Prize[], ring, confetti);
   const positionButtonWheel = 100
+  const WHEEL_SCALE = 1.8;
+  const WHEEL_OFFSET_Y = positionButtonWheel;
   wheel.position.set(0, 0);
   ring.position.copyFrom(wheel.position);
   confetti.position.copyFrom(wheel.position);
   wheelContainer.addChild(wheel, ring, confetti);
-  scaleAndCenterWheelContainer(wheelContainer, app, 1.8, positionButtonWheel);
+  scaleAndCenterWheelContainer(wheelContainer, app, WHEEL_SCALE, WHEEL_OFFSET_Y);
 
   const buttonTexture = await PIXI.Assets.load("/assets/wheel_button.png");
   const btn = new PIXI.Sprite(buttonTexture);
@@ -107,7 +109,7 @@ async function boot() {
 
   gsap.to(moneda2, { y: moneda2.position.y - 20, duration: 1.5, yoyo: true, repeat: -1, ease: "sine.inOut" });
 
-  const buttonImages = ["/assets/BOTON_01.png","/assets/BOTON_02.png", "/assets/BOTON_03.png"];
+  const buttonImages = ["/assets/BOTON_01.png", "/assets/BOTON_02.png", "/assets/BOTON_03.png"];
   const btnTextures = await Promise.all(buttonImages.map(img => PIXI.Assets.load(img)));
   const buttonScale = 0.25;
   const btnHeight = btnTextures[0].height * buttonScale;
@@ -182,7 +184,7 @@ async function boot() {
       wheelContainer.addChildAt(wheel, 0);
       ring.position.copyFrom(wheel.position);
       confetti.position.copyFrom(wheel.position);
-      scaleAndCenterWheelContainer(wheelContainer, app, 2, 200);
+      scaleAndCenterWheelContainer(wheelContainer, app, WHEEL_SCALE, WHEEL_OFFSET_Y);
 
       const activeBtn = menuButtons[activeConfigIndex];
       drawHighlight(activeBtn.position.x, activeBtn.position.y);
@@ -190,12 +192,13 @@ async function boot() {
       menuContainer.setChildIndex(highlight, 1);
     });
 
-    // === SOLO ESTE BLOQUE CAMBIADO: label a la DERECHA y color AZUL OSCURO ===
+    // === LABEL: derecha + color condicional (ELITE = azul clarito) ===
+    const isElite = String(configs[i].name).toUpperCase() === "ELITE";
     const labelStyle = new PIXI.TextStyle({
       fontFamily: "Montserrat, sans-serif",
       fontSize: Math.round(150 * buttonScale),
       fontWeight: "700",
-      fill: "#0A2540",      // azul oscuro
+      fill: isElite ? "#93C5FD" : "#0A2540", // ELITE -> azul clarito, otros -> azul oscuro
       align: "right",
       dropShadow: true,
     });
