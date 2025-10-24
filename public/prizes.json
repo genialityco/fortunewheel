@@ -6,42 +6,24 @@
       { "label": "MUG",        "prob": 0.03, "color": "#93C5FD" },
       { "label": "ABANICO",    "prob": 0.10, "color": "#60A5FA" },
       { "label": "TERMO",      "prob": 0.13, "color": "#3B82F6" },
-      { "label": "PROTEINA",   "prob": 0.21, "color": "#2563EB" },
-      { "label": "GORRA",      "prob": 0.03, "color": "#1D4ED8" },
-      { "label": "MUG",        "prob": 0.10, "color": "#1E40AF" },
-      { "label": "ABANICO",    "prob": 0.13, "color": "#1E3A8A" },
-      { "label": "TERMO",      "prob": 0.21, "color": "#172554" },
-      { "label": "PROTEINA",   "prob": 0.05, "color": "#0B173D" }
+      { "label": "MUG",        "prob": 0.03, "color": "#93C5FD" },
+      { "label": "ABANICO",    "prob": 0.10, "color": "#60A5FA" },
+      { "label": "TERMO",      "prob": 0.13, "color": "#3B82F6" }
+
+
     ]
   },
   {
     "name": "ORO",
     "color": "#FFD700",
     "prizes": [
-      { "label": "MUG",        "prob": 0.03, "color": "#FFE066" },
-      { "label": "ABANICO",    "prob": 0.10, "color": "#FFD700" },
-      { "label": "TERMO",      "prob": 0.13, "color": "#FFD100" },
-      { "label": "PROTEINA",   "prob": 0.21, "color": "#FFC400" },
-      { "label": "GORRA",      "prob": 0.03, "color": "#FFB800" },
-      { "label": "MUG",        "prob": 0.10, "color": "#E6A700" },
-      { "label": "ABANICO",    "prob": 0.13, "color": "#CC9E00" },
-      { "label": "TERMO",      "prob": 0.21, "color": "#B38F00" },
-      { "label": "PROTEINA",   "prob": 0.05, "color": "#997700" }
-    ]
-  },
-  {
-    "name": "EXCLUSIVO",
-    "color": "#005500",
-    "prizes": [
-      { "label": "CUADERNO",    "prob": 0.03, "color": "#66CC66" },
-      { "label": "BONO KHOL",   "prob": 0.10, "color": "#4DAA4D" },
-      { "label": "TOALLAS GYM", "prob": 0.13, "color": "#339933" },
-      { "label": "TERMO",       "prob": 0.21, "color": "#1A772E" },
-      { "label": "GORRA",       "prob": 0.03, "color": "#006600" },
-      { "label": "CUADERNO",    "prob": 0.10, "color": "#005500" },
-      { "label": "BONO KHOL",   "prob": 0.13, "color": "#004400" },
-      { "label": "TOALLAS GYM", "prob": 0.21, "color": "#003300" },
-      { "label": "TERMO",       "prob": 0.05, "color": "#002200" }
+      { "label": "RedBull",        "prob": 0.03, "color": "#FFE066" },
+      { "label": "Manilla \n\r Cashless",    "prob": 0.10, "color": "#FFD700" },
+      { "label": "Bono Gasolina",      "prob": 0.13, "color": "#FFD100" },
+      { "label": "RedBull",        "prob": 0.03, "color": "#FFE066" },
+      { "label": "Manilla \n\r Cashless",    "prob": 0.10, "color": "#FFD700" },
+      { "label": "Bono Gasolina",      "prob": 0.13, "color": "#FFD100" }
+
     ]
   }
 ]
