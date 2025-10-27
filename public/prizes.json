@@ -3,12 +3,12 @@
     "name": "ELITE",
     "color": "#0A2540",
     "prizes": [
-      { "label": "MUG",        "prob": 0.03, "color": "#93C5FD" },
-      { "label": "ABANICO",    "prob": 0.10, "color": "#60A5FA" },
-      { "label": "TERMO",      "prob": 0.13, "color": "#3B82F6" },
-      { "label": "MUG",        "prob": 0.03, "color": "#93C5FD" },
-      { "label": "ABANICO",    "prob": 0.10, "color": "#60A5FA" },
-      { "label": "TERMO",      "prob": 0.13, "color": "#3B82F6" }
+      { "label": "MUG",        "prob": 0.1666666, "color": "#93C5FD" },
+      { "label": "ABANICO",    "prob": 0.1666666, "color": "#60A5FA" },
+      { "label": "TERMO",      "prob": 0.1666666, "color": "#3B82F6" },
+      { "label": "MUG",        "prob": 0.1666666, "color": "#93C5FD" },
+      { "label": "ABANICO",    "prob": 0.1666666, "color": "#60A5FA" },
+      { "label": "TERMO",      "prob": 0.1666666, "color": "#3B82F6" }
 
 
     ]
@@ -17,12 +17,12 @@
     "name": "ORO",
     "color": "#FFD700",
     "prizes": [
-      { "label": "RedBull",        "prob": 0.03, "color": "#FFE066" },
-      { "label": "Manilla \n\r Cashless",    "prob": 0.10, "color": "#FFD700" },
-      { "label": "Bono Gasolina",      "prob": 0.13, "color": "#FFD100" },
-      { "label": "RedBull",        "prob": 0.03, "color": "#FFE066" },
-      { "label": "Manilla \n\r Cashless",    "prob": 0.10, "color": "#FFD700" },
-      { "label": "Bono Gasolina",      "prob": 0.13, "color": "#FFD100" }
+      { "label": "RedBull",                  "prob": 0.1666666, "color": "#FFE066" },
+      { "label": "Manilla \n\r Cashless",    "prob": 0.1666666, "color": "#FFD700" },
+      { "label": "Bono Gasolina",            "prob": 0.1666666, "color": "#FFD100" },
+      { "label": "RedBull",                  "prob": 0.1666666, "color": "#FFE066" },
+      { "label": "Manilla \n\r Cashless",    "prob": 0.1666666, "color": "#FFD700" },
+      { "label": "Bono Gasolina",            "prob": 0.1666666, "color": "#FFD100" }
 
     ]
   }
